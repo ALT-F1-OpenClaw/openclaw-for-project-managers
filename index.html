@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whiteboard to Gantt — OpenClaw for Project Managers</title>
+<meta name="description" content="From sticky notes to structured timelines. How OpenClaw turns whiteboard chaos into actionable Gantt charts for project managers.">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Whiteboard to Gantt — OpenClaw for Project Managers">
+<meta property="og:description" content="From sticky notes to structured timelines. How OpenClaw turns whiteboard chaos into actionable Gantt charts.">
+<meta property="og:image" content="assets/og-image.png">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Whiteboard to Gantt — OpenClaw for Project Managers">
+<meta name="twitter:description" content="From sticky notes to structured timelines. OpenClaw for project managers.">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,200;0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--transition:0.35s ease;}
+
+body.light{
+  --bg:#f5f4f0;--bg2:#eeecea;--bg3:#e5e3de;--surface:#ffffff;
+  --border:#d5d2cc;--border2:#bbb8b0;
+  --green:#007a3d;--green-dim:rgba(0,122,61,0.07);
+  --amber:#b85c00;--red:#cc2222;
+  --text:#111110;--text-dim:#5a5850;--text-muted:#aaa49a;
+  --prompt-text:#00aa55;--shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+body.dark{
+  --bg:#0a0a0a;--bg2:#0f0f0f;--bg3:#141414;--surface:#111;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --green:#00ff88;--green-dim:rgba(0,255,136,0.1);
+  --amber:#ffb800;--red:#ff4444;
+  --text:#e8e8e8;--text-dim:#777;--text-muted:#3a3a3a;
+  --prompt-text:#00ff88;--shadow:none;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;transition:background var(--transition),color var(--transition);}
+
+body.dark #scanlines{opacity:1;}body.light #scanlines{opacity:0;}
+#scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);pointer-events:none;z-index:100;transition:opacity var(--transition);}
+
+/* TOOLBAR */
+#toolbar{position:fixed;top:18px;right:22px;display:flex;gap:8px;z-index:500;pointer-events:auto;}
+.tb-btn{border:1px solid var(--border2);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.07em;padding:7px 13px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;}
+.tb-btn:hover,.tb-btn:active{color:var(--green);border-color:var(--green);}
+.tb-btn:active{transform:scale(.95);}
+
+/* SLIDES */
+#presentation{width:100vw;height:100vh;position:relative;z-index:1;}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:4vh 6vw 6vh;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow:hidden;}
+.slide.active{opacity:1;pointer-events:all;}
+
+/* PROGRESS */
+#progress-bar{position:fixed;bottom:0;left:0;height:2px;background:var(--green);transition:width .5s ease;z-index:200;}
+body.dark #progress-bar{box-shadow:0 0 6px var(--green);}
+#slide-counter{position:fixed;bottom:18px;right:22px;font-size:11px;color:var(--text-muted);letter-spacing:.1em;z-index:200;}
+#slide-counter em{color:var(--green);font-style:normal;}
+#nav-hint{position:fixed;bottom:18px;left:22px;font-size:11px;color:var(--text-muted);z-index:200;}
+.key{display:inline-block;border:1px solid var(--border2);padding:1px 6px;font-size:10px;color:var(--text-dim);background:var(--surface);border-radius:2px;cursor:pointer;transition:all .2s;user-select:none;}
+.key:hover{color:var(--green);border-color:var(--green);}
+
+/* TYPOGRAPHY */
+.prompt{font-size:12px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.prompt::before{content:'$';color:var(--green);font-weight:700;}
+.h-giant{font-size:clamp(2.6rem,6vw,5.5rem);font-weight:700;line-height:1.04;letter-spacing:-.03em;margin-bottom:.18em;}
+.h-large{font-size:clamp(1.8rem,3.4vw,3.2rem);font-weight:700;line-height:1.1;letter-spacing:-.025em;margin-bottom:.3em;}
+.h-medium{font-size:clamp(1.3rem,2.4vw,2rem);font-weight:700;line-height:1.15;letter-spacing:-.02em;margin-bottom:.3em;}
+.accent{color:var(--green);}.dim{color:var(--text-dim);}.amber-c{color:var(--amber);}.strike{text-decoration:line-through;color:var(--text-muted);}
+.body-text{font-size:clamp(.9rem,1.4vw,1.1rem);color:var(--text-dim);line-height:1.78;max-width:72ch;}
+.body-text .hl{color:var(--text);font-weight:700;}.body-text .gr{color:var(--green);}
+.sep{width:40px;height:2px;background:var(--green);margin:14px 0;}
+body.dark .sep{box-shadow:0 0 6px var(--green);}
+
+/* TERMINAL */
+.terminal{background:#111;border:1px solid var(--border2);font-size:13px;line-height:1.9;position:relative;overflow:hidden;box-shadow:var(--shadow);margin-top:18px;}
+body.light .terminal{background:#1a1a18;border-color:#444;}
+.t-head{background:#222;padding:8px 14px;display:flex;align-items:center;gap:7px;}
+.dot{width:11px;height:11px;border-radius:50%;}
+.dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
+.t-body{padding:14px 18px;}
+.t-cmd{color:var(--prompt-text);}
+.t-out{color:#999;padding-left:20px;display:block;}
+.t-comment{color:#444;font-style:italic;display:block;}
+.t-hi{color:var(--amber);}.t-acc{color:var(--prompt-text);}
+.t-line{display:flex;gap:10px;}
+
+/* METRICS */
+.metrics-row{display:flex;gap:14px;margin-top:20px;width:100%;}
+.metric-card{border:1px solid var(--border2);padding:20px 24px;flex:1;background:var(--surface);position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);}
+body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
+.metric-num{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;color:var(--green);line-height:1;margin-bottom:8px;}
+.metric-label{font-size:12px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;line-height:1.5;}
+
+/* STEP CARDS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;width:100%;}
+.step-card{border:1px solid var(--border2);padding:20px;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.step-num{font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:8px;font-weight:700;}
+.step-title{font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;}
+.step-stack{font-size:10px;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.step-desc{font-size:12px;color:var(--text-dim);line-height:1.68;flex:1;}
+
+/* PHASES */
+.phases-full{display:flex;flex-direction:column;gap:10px;width:100%;}
+.phase{display:grid;grid-template-columns:28px 1fr;gap:14px;align-items:start;padding:13px 16px;border-left:2px solid var(--border2);background:var(--surface);box-shadow:var(--shadow);transition:border-color .3s,background .3s;}
+.phase.active-phase{border-left-color:var(--green);background:var(--green-dim);}
+.phase-num{color:var(--text-muted);font-size:11px;padding-top:2px;font-weight:700;}
+.phase.active-phase .phase-num{color:var(--green);}
+.phase-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.phase.active-phase .phase-title{color:var(--green);}
+.phase-desc{font-size:12px;color:var(--text-dim);line-height:1.62;}
+.phase-tag{display:inline-block;font-size:9px;padding:1px 7px;border:1px solid var(--border2);color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-left:8px;vertical-align:middle;}
+.phase.active-phase .phase-tag{border-color:var(--green);color:var(--green);}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;width:100%;}
+.col-card{border:1px solid var(--border2);padding:20px;background:var(--surface);box-shadow:var(--shadow);}
+.col-title{font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.col-title::before{content:'●';font-size:9px;}
+.col-card.good .col-title{color:var(--green);}.col-card.good .col-title::before{color:var(--green);}
+.col-card.old .col-title{color:var(--amber);}.col-card.old .col-title::before{color:var(--amber);}
+.col-item{font-size:12px;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.col-item:last-child{border-bottom:none;}
+.col-item::before{content:'→';color:var(--text-muted);font-size:10px;flex-shrink:0;margin-top:2px;}
+
+/* QUESTIONS */
+.questions-list{display:flex;flex-direction:column;gap:0;margin-top:18px;width:100%;}
+.question-item{display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:14px;line-height:1.75;color:var(--text-dim);padding:16px 0;border-bottom:1px solid var(--border);}
+.question-item:last-child{border-bottom:none;}
+.q-mark{color:var(--amber);font-weight:700;font-size:18px;}
+.question-item strong{color:var(--text);}
+
+/* CTA */
+.cta-box{border:1px solid var(--green);padding:30px 36px;margin-top:22px;max-width:780px;position:relative;background:var(--green-dim);box-shadow:var(--shadow);}
+.cta-box::before{content:attr(data-label);position:absolute;top:-9px;left:20px;background:var(--bg);padding:0 10px;font-size:10px;letter-spacing:.14em;color:var(--green);font-weight:700;}
+.cta-text{font-size:clamp(.95rem,1.5vw,1.15rem);line-height:1.8;color:var(--text);margin-bottom:18px;}
+.cta-text strong{color:var(--green);}
+.cta-contact{font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:5px;}
+.cta-contact a{color:var(--green);text-decoration:none;}.cta-contact a:hover{text-decoration:underline;}
+
+/* ANIMATIONS */
+.slide.active .ai{animation:fadeUp .44s ease forwards;opacity:0;}
+.slide.active .ai:nth-child(1){animation-delay:.04s;}
+.slide.active .ai:nth-child(2){animation-delay:.12s;}
+.slide.active .ai:nth-child(3){animation-delay:.21s;}
+.slide.active .ai:nth-child(4){animation-delay:.30s;}
+.slide.active .ai:nth-child(5){animation-delay:.39s;}
+.slide.active .ai:nth-child(6){animation-delay:.48s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.blink{animation:blink 1s step-end infinite;color:var(--green);}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.glitch{position:relative;}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;pointer-events:none;}
+.glitch::before{color:#ff0044;animation:gb 5s infinite;clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%);}
+.glitch::after{color:#0088ff;animation:ga 5s infinite;clip-path:polygon(0 60%,100% 60%,100% 78%,0 78%);}
+@keyframes gb{0%,88%,100%{transform:none;opacity:0;}90%{transform:translateX(-3px);opacity:.6;}92%{transform:translateX(2px);opacity:.6;}94%{opacity:0;}}
+@keyframes ga{0%,89%,100%{transform:none;opacity:0;}91%{transform:translateX(3px);opacity:.5;}93%{transform:translateX(-2px);opacity:.5;}95%{opacity:0;}}
+
+/* SLIDE MENU */
+#slide-menu{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+#slide-menu.open{display:flex;}
+#slide-menu-inner{background:var(--surface);border:1px solid var(--border2);max-width:420px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.3);padding:0;}
+#slide-menu-inner .sm-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:14px 18px 8px;border-bottom:1px solid var(--border);}
+.sm-item{display:flex;align-items:center;gap:12px;padding:10px 18px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-dim);text-decoration:none;}
+.sm-item:last-child{border-bottom:none;}
+.sm-item:hover{background:var(--green-dim);color:var(--text);}
+.sm-item.sm-active{color:var(--green);font-weight:700;}
+.sm-num{font-size:10px;color:var(--text-muted);min-width:20px;text-align:right;font-weight:700;}
+.sm-item.sm-active .sm-num{color:var(--green);}
+
+/* i18n */
+.i18n-en{display:inline;}.i18n-fr{display:none;}
+
+/* FLOW DIAGRAM */
+.flow-row{display:flex;align-items:center;gap:12px;margin-top:18px;width:100%;flex-wrap:wrap;}
+.flow-box{border:1px solid var(--border2);padding:14px 18px;background:var(--surface);box-shadow:var(--shadow);text-align:center;flex:1;min-width:120px;}
+.flow-box.highlight{border-color:var(--green);background:var(--green-dim);}
+.flow-box .fb-icon{font-size:24px;margin-bottom:6px;}
+.flow-box .fb-label{font-size:11px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;font-weight:700;}
+.flow-box.highlight .fb-label{color:var(--green);}
+.flow-arrow{font-size:20px;color:var(--text-muted);flex-shrink:0;}
+
+@media(max-width:700px){
+  .slide{padding:3vh 5vw 14vh;justify-content:flex-start;padding-top:6vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .slide.active{overflow-y:auto;}
+  .h-giant{font-size:clamp(1.6rem,8vw,2.4rem);}
+  .h-large{font-size:clamp(1.2rem,5.5vw,1.7rem);}
+  .body-text{font-size:clamp(.82rem,3.5vw,.95rem);line-height:1.65;}
+  .prompt{font-size:10px;margin-bottom:10px;}
+  #toolbar{top:10px;right:10px;gap:5px;}
+  .tb-btn{font-size:10px;padding:5px 9px;}
+  #nav-hint{display:none;}
+  #slide-counter{bottom:10px;right:12px;font-size:10px;}
+  .steps-grid,.two-col{grid-template-columns:1fr;}
+  .metrics-row{flex-direction:column;gap:10px;}
+  .metric-card{padding:14px 16px;}
+  .metric-num{font-size:clamp(1.2rem,5vw,1.6rem)!important;}
+  .metric-label{font-size:10px;}
+  .terminal{font-size:11px;margin-top:12px;}
+  .t-body{padding:10px 12px;}
+  .t-out{padding-left:12px;font-size:10px;}
+  .question-item{font-size:12px;padding:12px 0;gap:10px;}
+  .q-mark{font-size:15px;}
+  .cta-box{padding:18px 16px;margin-top:14px;}
+  .cta-text{font-size:clamp(.85rem,3.5vw,1rem);}
+  .cta-contact{font-size:11px;}
+  .col-item{font-size:11px;}
+  .col-title{font-size:12px;}
+  .sep{margin:10px 0;}
+  .flow-row{flex-direction:column;gap:8px;}
+  .flow-arrow{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body class="dark">
+<div id="scanlines"></div>
+<div id="toolbar">
+  <button class="tb-btn" id="menu-btn">☰ Menu</button>
+  <button class="tb-btn" id="lang-btn">🌐 FR</button>
+  <button class="tb-btn" id="theme-btn">◐ Light</button>
+</div>
+<div id="slide-menu" onclick="if(event.target===this)toggleMenu()">
+  <div id="slide-menu-inner"></div>
+</div>
+
+<div id="presentation">
+
+<!-- 0 · TITLE -->
+<div class="slide active" id="s0">
+  <div class="ai" style="font-size:12px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px"
+    data-t='{"en":"whiteboard-to-gantt /// openclaw for project managers","fr":"whiteboard-to-gantt /// openclaw pour chefs de projet"}'>whiteboard-to-gantt /// openclaw for project managers</div>
+  <div class="ai">
+    <div class="h-giant glitch" data-text="From sticky notes"
+      data-t='{"en":"From sticky notes","fr":"Des post-its"}'>From sticky notes</div>
+    <div class="h-giant"><span class="accent" data-t='{"en":"to Gantt charts","fr":"aux diagrammes de Gantt"}'>to Gantt charts</span></div>
+    <div class="h-giant"><span class="dim" data-t='{"en":"in seconds","fr":"en quelques secondes"}'>in seconds</span><span class="blink">_</span></div>
+  </div>
+  <div class="sep ai"></div>
+  <div class="body-text ai"
+    data-t='{"en":"How <span class=\"hl\">OpenClaw</span> turns whiteboard chaos into structured, actionable project timelines.<br>A walkthrough for project managers. No code required.","fr":"Comment <span class=\"hl\">OpenClaw</span> transforme le chaos du tableau blanc en plannings structurés et actionnables.<br>Un guide pour chefs de projet. Aucun code requis."}'>
+    How <span class="hl">OpenClaw</span> turns whiteboard chaos into structured, actionable project timelines.<br>A walkthrough for project managers. No code required.</div>
+</div>
+
+<!-- 1 · THE PROBLEM -->
+<div class="slide" id="s1">
+  <div class="prompt ai" data-t='{"en":"cat ~/frustrations.log","fr":"cat ~/frustrations.log"}'>cat ~/frustrations.log</div>
+  <div class="h-large ai">
+    <span data-t='{"en":"The whiteboard is","fr":"Le tableau blanc est"}'>The whiteboard is</span> <span class="accent" data-t='{"en":"great.","fr":"génial."}'>great.</span><br>
+    <span class="dim" style="font-size:.58em;font-weight:400" data-t='{"en":"Until the meeting ends.","fr":"Jusqu&apos;à la fin de la réunion."}'>Until the meeting ends.</span>
+  </div>
+  <div class="sep ai"></div>
+  <div class="body-text ai"
+    data-t='{"en":"You brainstorm tasks, draw dependencies, stick deadlines on the wall. Then someone takes a blurry photo and emails it to the team.<br><br><span class=\"hl\">Two days later, nobody remembers what was decided.</span> The Gantt chart in your PM tool looks nothing like what was on the board.","fr":"Vous brainstormez les tâches, dessinez les dépendances, collez les deadlines au mur. Puis quelqu&apos;un prend une photo floue et l&apos;envoie par email.<br><br><span class=\"hl\">Deux jours plus tard, personne ne se souvient de ce qui a été décidé.</span> Le Gantt dans votre outil PM ne ressemble en rien au tableau."}'>
+    You brainstorm tasks, draw dependencies, stick deadlines on the wall. Then someone takes a blurry photo and emails it to the team.<br><br><span class="hl">Two days later, nobody remembers what was decided.</span> The Gantt chart in your PM tool looks nothing like what was on the board.</div>
+</div>
+
+<!-- 2 · THE FLOW -->
+<div class="slide" id="s2">
+  <div class="prompt ai">openclaw --flow whiteboard-to-gantt</div>
+  <div class="h-large ai" data-t='{"en":"The <span class=\"accent\">pipeline</span>","fr":"Le <span class=\"accent\">pipeline</span>"}'>The <span class="accent">pipeline</span></div>
+  <div class="flow-row ai">
+    <div class="flow-box">
+      <div class="fb-icon">📸</div>
+      <div class="fb-label" data-t='{"en":"Snap","fr":"Photo"}'>Snap</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">
+      <div class="fb-icon">🧠</div>
+      <div class="fb-label" data-t='{"en":"Understand","fr":"Comprendre"}'>Understand</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box">
+      <div class="fb-icon">📋</div>
+      <div class="fb-label" data-t='{"en":"Structure","fr":"Structurer"}'>Structure</div>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-box highlight">
+      <div class="fb-icon">📊</div>
+      <div class="fb-label" data-t='{"en":"Gantt","fr":"Gantt"}'>Gantt</div>
+    </div>
+  </div>
+  <div class="body-text ai" style="margin-top:20px"
+    data-t='{"en":"Take a photo of your whiteboard → OpenClaw reads it with vision → extracts tasks, owners, dependencies, dates → generates a structured Gantt chart.<br><br>Directly into <span class=\"hl\">OpenProject, Jira, or a standalone HTML export</span>.","fr":"Prenez une photo du tableau → OpenClaw la lit avec la vision → extrait tâches, responsables, dépendances, dates → génère un diagramme de Gantt structuré.<br><br>Directement dans <span class=\"hl\">OpenProject, Jira ou un export HTML autonome</span>."}'>
+    Take a photo of your whiteboard → OpenClaw reads it with vision → extracts tasks, owners, dependencies, dates → generates a structured Gantt chart.<br><br>Directly into <span class="hl">OpenProject, Jira, or a standalone HTML export</span>.</div>
+</div>
+
+<!-- 3 · LIVE DEMO TERMINAL -->
+<div class="slide" id="s3">
+  <div class="prompt ai">openclaw run</div>
+  <div class="h-large ai" data-t='{"en":"See it <span class=\"accent\">happen</span>","fr":"Voyez-le <span class=\"accent\">en action</span>"}'>See it <span class="accent">happen</span></div>
+  <div class="terminal ai" style="max-width:780px">
+    <div class="t-head"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <div class="t-body">
+      <div class="t-line"><span class="t-cmd">$</span><span style="color:#ccc"> openclaw "analyze this whiteboard photo"</span></div>
+      <span class="t-out">● Receiving image from phone camera...</span>
+      <span class="t-out">● Vision model analyzing whiteboard...</span>
+      <span class="t-out">● Found <span class="t-acc">12 tasks</span>, <span class="t-acc">4 milestones</span>, <span class="t-acc">8 dependencies</span></span>
+      <span class="t-out">● Detected owners: <span class="t-hi">Sarah, Mike, Team-Backend, Team-Design</span></span>
+      <span class="t-out">● Generating Gantt timeline...</span>
+      <span class="t-out">● Pushing to OpenProject... <span class="t-acc">✓ 12 work packages created</span></span>
+      <span class="t-comment" style="margin-top:6px"
+        data-t='{"en":"# From photo to structured project in under 30 seconds.","fr":"# De la photo au projet structuré en moins de 30 secondes."}'>
+        # From photo to structured project in under 30 seconds.</span>
+    </div>
+  </div>
+  <div class="body-text ai" style="margin-top:20px"
+    data-t='{"en":"No transcription errors. No lost context. No \"wait, what did we agree on?\"<br>The AI <span class=\"hl\">reads your handwriting, understands spatial relationships, and infers task dependencies</span> from how things are laid out on the board.","fr":"Pas d&apos;erreurs de transcription. Pas de contexte perdu. Pas de \"attends, on avait dit quoi ?\"<br>L&apos;IA <span class=\"hl\">lit votre écriture, comprend les relations spatiales et infère les dépendances</span> à partir de la disposition sur le tableau."}'>
+    No transcription errors. No lost context. No "wait, what did we agree on?"<br>The AI <span class="hl">reads your handwriting, understands spatial relationships, and infers task dependencies</span> from how things are laid out on the board.</div>
+</div>
+
+<!-- 4 · WHAT IT EXTRACTS -->
+<div class="slide" id="s4">
+  <div class="prompt ai">openclaw --inspect extracted-data</div>
+  <div class="h-large ai" data-t='{"en":"What it <span class=\"accent\">sees</span>","fr":"Ce qu&apos;il <span class=\"accent\">voit</span>"}'>What it <span class="accent">sees</span></div>
+  <div class="phases-full ai">
+    <div class="phase active-phase">
+      <div class="phase-num">01</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Tasks & Subtasks","fr":"Tâches & Sous-tâches"}'>Tasks & Subtasks</div>
+        <div class="phase-desc" data-t='{"en":"Sticky notes, bullet points, circled items → structured work packages with titles and descriptions","fr":"Post-its, listes à puces, éléments encerclés → work packages structurés avec titres et descriptions"}'>Sticky notes, bullet points, circled items → structured work packages with titles and descriptions</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Dependencies & Arrows","fr":"Dépendances & Flèches"}'>Dependencies & Arrows</div>
+        <div class="phase-desc" data-t='{"en":"Lines, arrows, \"after X\" annotations → predecessor/successor relationships in the Gantt","fr":"Lignes, flèches, annotations \"après X\" → relations prédécesseur/successeur dans le Gantt"}'>Lines, arrows, "after X" annotations → predecessor/successor relationships in the Gantt</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"People & Assignments","fr":"Personnes & Attributions"}'>People & Assignments</div>
+        <div class="phase-desc" data-t='{"en":"Names, initials, team labels → assigned owners on each task","fr":"Noms, initiales, labels d&apos;équipe → responsables assignés à chaque tâche"}'>Names, initials, team labels → assigned owners on each task</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">04</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Dates & Milestones","fr":"Dates & Jalons"}'>Dates & Milestones</div>
+        <div class="phase-desc" data-t='{"en":"\"Week 3\", \"March\", \"MVP\" → start/end dates, milestone markers, sprint boundaries","fr":"\"Semaine 3\", \"Mars\", \"MVP\" → dates début/fin, jalons, limites de sprint"}'>\"Week 3\", \"March\", \"MVP\" → start/end dates, milestone markers, sprint boundaries</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">05</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Priority & Urgency","fr":"Priorité & Urgence"}'>Priority & Urgency</div>
+        <div class="phase-desc" data-t='{"en":"Stars, exclamation marks, red markers, underlines → priority levels on work packages","fr":"Étoiles, points d&apos;exclamation, marqueurs rouges, soulignements → niveaux de priorité sur les work packages"}'>Stars, exclamation marks, red markers, underlines → priority levels on work packages</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5 · METRICS -->
+<div class="slide" id="s5">
+  <div class="prompt ai" data-t='{"en":"openclaw stats --benchmark","fr":"openclaw stats --benchmark"}'>openclaw stats --benchmark</div>
+  <div class="h-large ai" data-t='{"en":"By the <span class=\"accent\">numbers</span>","fr":"En <span class=\"accent\">chiffres</span>"}'>By the <span class="accent">numbers</span></div>
+  <div class="metrics-row ai">
+    <div class="metric-card">
+      <div class="metric-num">&lt;30s</div>
+      <div class="metric-label" data-t='{"en":"Photo to Gantt","fr":"Photo vers Gantt"}'>Photo to Gantt</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">95%</div>
+      <div class="metric-label" data-t='{"en":"Task detection accuracy","fr":"Précision détection tâches"}'>Task detection accuracy</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">0</div>
+      <div class="metric-label" data-t='{"en":"Lines of code required","fr":"Lignes de code requises"}'>Lines of code required</div>
+    </div>
+  </div>
+  <div class="metrics-row ai">
+    <div class="metric-card">
+      <div class="metric-num">3h→5min</div>
+      <div class="metric-label" data-t='{"en":"Manual entry eliminated","fr":"Saisie manuelle éliminée"}'>Manual entry eliminated</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">∞</div>
+      <div class="metric-label" data-t='{"en":"Whiteboards supported","fr":"Tableaux blancs supportés"}'>Whiteboards supported</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-num">3</div>
+      <div class="metric-label" data-t='{"en":"PM tools integrated","fr":"Outils PM intégrés"}'>PM tools integrated</div>
+    </div>
+  </div>
+</div>
+
+<!-- 6 · BEFORE / AFTER -->
+<div class="slide" id="s6">
+  <div class="prompt ai">diff --old-workflow --new-workflow</div>
+  <div class="h-large ai" data-t='{"en":"Before / <span class=\"accent\">After</span>","fr":"Avant / <span class=\"accent\">Après</span>"}'>Before / <span class="accent">After</span></div>
+  <div class="two-col ai">
+    <div class="col-card old">
+      <div class="col-title" data-t='{"en":"Before OpenClaw","fr":"Avant OpenClaw"}'>Before OpenClaw</div>
+      <div class="col-item" data-t='{"en":"Blurry phone photo of the whiteboard","fr":"Photo floue du tableau au téléphone"}'>Blurry phone photo of the whiteboard</div>
+      <div class="col-item" data-t='{"en":"Manual data entry into PM tool (2-3 hours)","fr":"Saisie manuelle dans l&apos;outil PM (2-3 heures)"}'>Manual data entry into PM tool (2-3 hours)</div>
+      <div class="col-item" data-t='{"en":"\"Wait, was that task before or after the MVP?\"","fr":"\"Attends, cette tâche était avant ou après le MVP ?\""}'>\"Wait, was that task before or after the MVP?\"</div>
+      <div class="col-item" data-t='{"en":"Dependencies lost in translation","fr":"Dépendances perdues dans la traduction"}'>Dependencies lost in translation</div>
+      <div class="col-item" data-t='{"en":"Gantt doesn&apos;t match what the team agreed on","fr":"Le Gantt ne correspond pas à ce que l&apos;équipe a décidé"}'>Gantt doesn't match what the team agreed on</div>
+    </div>
+    <div class="col-card good">
+      <div class="col-title" data-t='{"en":"With OpenClaw","fr":"Avec OpenClaw"}'>With OpenClaw</div>
+      <div class="col-item" data-t='{"en":"Snap → structured data in 30 seconds","fr":"Photo → données structurées en 30 secondes"}'>Snap → structured data in 30 seconds</div>
+      <div class="col-item" data-t='{"en":"Tasks auto-created in OpenProject/Jira","fr":"Tâches auto-créées dans OpenProject/Jira"}'>Tasks auto-created in OpenProject/Jira</div>
+      <div class="col-item" data-t='{"en":"Dependencies preserved exactly as drawn","fr":"Dépendances préservées exactement comme dessinées"}'>Dependencies preserved exactly as drawn</div>
+      <div class="col-item" data-t='{"en":"Owners assigned, milestones marked","fr":"Responsables assignés, jalons marqués"}'>Owners assigned, milestones marked</div>
+      <div class="col-item" data-t='{"en":"Team reviews Gantt in the same meeting","fr":"L&apos;équipe revoit le Gantt dans la même réunion"}'>Team reviews Gantt in the same meeting</div>
+    </div>
+  </div>
+</div>
+
+<!-- 7 · INTEGRATIONS -->
+<div class="slide" id="s7">
+  <div class="prompt ai">openclaw skills --list</div>
+  <div class="h-large ai" data-t='{"en":"Plugs into <span class=\"accent\">your stack</span>","fr":"S&apos;intègre à <span class=\"accent\">votre stack</span>"}'>Plugs into <span class="accent">your stack</span></div>
+  <div class="steps-grid ai">
+    <div class="step-card">
+      <div class="step-num">SKILL</div>
+      <div class="step-title">OpenProject</div>
+      <div class="step-stack">REST API v3</div>
+      <div class="step-desc" data-t='{"en":"Create work packages, set relations, assign members, update status — all via the OpenProject skill.","fr":"Créer des work packages, définir des relations, assigner des membres, mettre à jour le statut — via le skill OpenProject."}'>Create work packages, set relations, assign members, update status — all via the OpenProject skill.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">SKILL</div>
+      <div class="step-title">Jira</div>
+      <div class="step-stack">REST API v3</div>
+      <div class="step-desc" data-t='{"en":"Create issues, link dependencies, set sprints and story points. Full Jira Cloud integration.","fr":"Créer des issues, lier les dépendances, définir sprints et story points. Intégration complète Jira Cloud."}'>Create issues, link dependencies, set sprints and story points. Full Jira Cloud integration.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">EXPORT</div>
+      <div class="step-title">HTML / CSV</div>
+      <div class="step-stack" data-t='{"en":"Standalone","fr":"Autonome"}'>Standalone</div>
+      <div class="step-desc" data-t='{"en":"Generate a self-contained Gantt chart as HTML or export task data as CSV for any tool.","fr":"Générer un diagramme de Gantt HTML autonome ou exporter les données en CSV pour n&apos;importe quel outil."}'>Generate a self-contained Gantt chart as HTML or export task data as CSV for any tool.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 8 · HOW IT WORKS UNDER THE HOOD -->
+<div class="slide" id="s8">
+  <div class="prompt ai">openclaw --explain architecture</div>
+  <div class="h-large ai" data-t='{"en":"Under the <span class=\"accent\">hood</span>","fr":"Sous le <span class=\"accent\">capot</span>"}'>Under the <span class="accent">hood</span></div>
+  <div class="phases-full ai">
+    <div class="phase active-phase">
+      <div class="phase-num">01</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Vision Analysis","fr":"Analyse Vision"}'>Vision Analysis</div>
+        <div class="phase-desc" data-t='{"en":"Claude&apos;s vision model reads the whiteboard image — handwriting, diagrams, spatial layout, colors, arrows. Everything.","fr":"Le modèle vision de Claude lit l&apos;image du tableau — écriture, diagrammes, disposition spatiale, couleurs, flèches. Tout."}'>Claude's vision model reads the whiteboard image — handwriting, diagrams, spatial layout, colors, arrows. Everything.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Context Engineering","fr":"Context Engineering"}'>Context Engineering</div>
+        <div class="phase-desc" data-t='{"en":"OpenClaw skills provide the project management context: your team roster, existing project structure, naming conventions, tool constraints.","fr":"Les skills OpenClaw fournissent le contexte PM : liste d&apos;équipe, structure projet existante, conventions de nommage, contraintes outils."}'>OpenClaw skills provide the project management context: your team roster, existing project structure, naming conventions, tool constraints.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Structured Extraction","fr":"Extraction Structurée"}'>Structured Extraction</div>
+        <div class="phase-desc" data-t='{"en":"Tasks, dependencies, milestones, owners extracted into a clean JSON structure. Human reviews before push.","fr":"Tâches, dépendances, jalons, responsables extraits en JSON propre. L&apos;humain valide avant le push."}'>Tasks, dependencies, milestones, owners extracted into a clean JSON structure. Human reviews before push.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">04</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"API Push","fr":"Push API"}'>API Push</div>
+        <div class="phase-desc" data-t='{"en":"One command pushes everything to OpenProject/Jira: creates tasks, sets relations, assigns people, marks milestones.","fr":"Une commande pousse tout vers OpenProject/Jira : crée les tâches, définit les relations, assigne les personnes, marque les jalons."}'>One command pushes everything to OpenProject/Jira: creates tasks, sets relations, assigns people, marks milestones.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9 · USE CASES -->
+<div class="slide" id="s9">
+  <div class="prompt ai">ls ~/use-cases/</div>
+  <div class="h-large ai" data-t='{"en":"Who is this <span class=\"accent\">for</span>","fr":"Pour <span class=\"accent\">qui</span>"}'>Who is this <span class="accent">for</span></div>
+  <div class="questions-list ai">
+    <div class="question-item">
+      <div class="q-mark">→</div>
+      <div data-t='{"en":"<strong>Sprint planning</strong> — photograph the board at standup, Gantt is ready before lunch","fr":"<strong>Sprint planning</strong> — photographiez le board au standup, le Gantt est prêt avant midi"}'>
+        <strong>Sprint planning</strong> — photograph the board at standup, Gantt is ready before lunch</div>
+    </div>
+    <div class="question-item">
+      <div class="q-mark">→</div>
+      <div data-t='{"en":"<strong>Workshop facilitation</strong> — capture every breakout group&apos;s board, merge into one project plan","fr":"<strong>Facilitation d&apos;ateliers</strong> — capturez le tableau de chaque groupe, fusionnez en un seul plan projet"}'>
+        <strong>Workshop facilitation</strong> — capture every breakout group's board, merge into one project plan</div>
+    </div>
+    <div class="question-item">
+      <div class="q-mark">→</div>
+      <div data-t='{"en":"<strong>Client kickoffs</strong> — whiteboard with the client, send them a structured timeline before they leave the room","fr":"<strong>Kickoffs client</strong> — tableau blanc avec le client, envoyez-leur un planning structuré avant qu&apos;ils quittent la salle"}'>
+        <strong>Client kickoffs</strong> — whiteboard with the client, send them a structured timeline before they leave the room</div>
+    </div>
+    <div class="question-item">
+      <div class="q-mark">→</div>
+      <div data-t='{"en":"<strong>Retrospectives</strong> — action items from the retro board go straight into the backlog","fr":"<strong>Rétrospectives</strong> — les actions du board retro vont directement dans le backlog"}'>
+        <strong>Retrospectives</strong> — action items from the retro board go straight into the backlog</div>
+    </div>
+  </div>
+</div>
+
+<!-- 10 · CTA -->
+<div class="slide" id="s10">
+  <div class="prompt ai">cat NEXT_STEPS.md</div>
+  <div class="h-large ai" data-t='{"en":"Get <span class=\"accent\">started</span>","fr":"<span class=\"accent\">Commencer</span>"}'>Get <span class="accent">started</span></div>
+  <div class="sep ai"></div>
+  <div class="cta-box ai" data-label="OPEN SOURCE">
+    <div class="cta-text" data-t='{"en":"OpenClaw is open source. The whiteboard-to-gantt workflow uses <strong>vision + skills</strong> that are already available.<br>Install OpenClaw, configure your PM tool skill, and snap your first whiteboard.","fr":"OpenClaw est open source. Le workflow whiteboard-to-gantt utilise <strong>vision + skills</strong> déjà disponibles.<br>Installez OpenClaw, configurez votre skill PM, et photographiez votre premier tableau."}'>
+      OpenClaw is open source. The whiteboard-to-gantt workflow uses <strong>vision + skills</strong> that are already available.<br>Install OpenClaw, configure your PM tool skill, and snap your first whiteboard.</div>
+    <div class="cta-contact">
+      <div>→ <a href="https://github.com/openclaw/openclaw" target="_blank">github.com/openclaw/openclaw</a></div>
+      <div>→ <a href="https://docs.openclaw.ai" target="_blank">docs.openclaw.ai</a></div>
+      <div>→ <a href="https://discord.com/invite/clawd" target="_blank">discord.com/invite/clawd</a></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /presentation -->
+
+<div id="progress-bar" style="width:0%"></div>
+<div id="slide-counter"><em>1</em> / 11</div>
+<div id="nav-hint">
+  <span class="key" onclick="go(-1)">←</span>
+  <span class="key" onclick="go(1)">→</span>
+  <span class="key" onclick="toggleFS()">F</span>
+</div>
+
+<script>
+// ── Slide engine ──
+const slides=document.querySelectorAll('.slide');
+let cur=0,total=slides.length,lang='en',touchX=0;
+
+function show(n){
+  if(n<0||n>=total)return;
+  slides[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');
+  document.getElementById('progress-bar').style.width=((cur/(total-1))*100)+'%';
+  document.getElementById('slide-counter').innerHTML='<em>'+(cur+1)+'</em> / '+total;
+  buildMenu();
+}
+function go(d){show(cur+d);}
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')go(1);
+  else if(e.key==='ArrowLeft')go(-1);
+  else if(e.key==='f'||e.key==='F')toggleFS();
+  else if(e.key==='Escape'){
+    if(document.getElementById('slide-menu').classList.contains('open'))toggleMenu();
+    else if(document.fullscreenElement)document.exitFullscreen();
+  }
+});
+
+// Touch
+document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX;},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].screenX-touchX;
+  if(Math.abs(dx)>50){dx<0?go(1):go(-1);}
+},{passive:true});
+
+// Click navigation (left/right halves)
+document.getElementById('presentation').addEventListener('click',e=>{
+  if(e.target.closest('a,button,.tb-btn,.key,.sm-item,.flow-box,.phase,.step-card'))return;
+  e.clientX>window.innerWidth/2?go(1):go(-1);
+});
+
+// Fullscreen
+function toggleFS(){
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+  else document.exitFullscreen();
+}
+
+// ── Theme toggle ──
+const themeBtn=document.getElementById('theme-btn');
+function setTheme(t){
+  document.body.className=t;
+  themeBtn.textContent=t==='dark'?'◐ Light':'◐ Dark';
+  localStorage.setItem('theme',t);
+}
+themeBtn.onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');
+if(localStorage.getItem('theme'))setTheme(localStorage.getItem('theme'));
+
+// ── i18n ──
+const langBtn=document.getElementById('lang-btn');
+function setLang(l){
+  lang=l;
+  langBtn.textContent=l==='en'?'🌐 FR':'🌐 EN';
+  document.querySelectorAll('[data-t]').forEach(el=>{
+    try{
+      const t=JSON.parse(el.getAttribute('data-t'));
+      if(t[l])el.innerHTML=t[l];
+    }catch(e){}
+  });
+  // Glitch text update
+  document.querySelectorAll('.glitch[data-tg]').forEach(el=>{
+    try{
+      const t=JSON.parse(el.getAttribute('data-tg'));
+      if(t[l])el.setAttribute('data-text',t[l]);
+    }catch(e){}
+  });
+  localStorage.setItem('lang',l);
+}
+langBtn.onclick=()=>setLang(lang==='en'?'fr':'en');
+if(localStorage.getItem('lang'))setLang(localStorage.getItem('lang'));
+
+// ── Slide menu ──
+const menuTitles={
+  en:['Title','The Problem','The Pipeline','Live Demo','What It Sees','By the Numbers','Before / After','Integrations','Under the Hood','Use Cases','Get Started'],
+  fr:['Titre','Le Problème','Le Pipeline','Démo Live','Ce Qu\'il Voit','En Chiffres','Avant / Après','Intégrations','Sous le Capot','Cas d\'Usage','Commencer']
+};
+function buildMenu(){
+  const inner=document.getElementById('slide-menu-inner');
+  inner.innerHTML='<div class="sm-title">Slides</div>'+
+    menuTitles[lang].map((t,i)=>
+      `<div class="sm-item${i===cur?' sm-active':''}" onclick="show(${i});toggleMenu()"><span class="sm-num">${String(i+1).padStart(2,'0')}</span>${t}</div>`
+    ).join('');
+}
+function toggleMenu(){
+  const m=document.getElementById('slide-menu');
+  m.classList.toggle('open');
+  if(m.classList.contains('open'))buildMenu();
+}
+document.getElementById('menu-btn').onclick=toggleMenu;
+
+// Init
+show(0);
+</script>
+</body>
+</html>
