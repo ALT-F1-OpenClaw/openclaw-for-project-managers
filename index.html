@@ -11,6 +11,9 @@
 <meta property="og:description" content="PRINCE2, PMBoK or PMI for dummies like me. By <a href="https://be.linkedin.com/in/abdelkrimboujraf" target="_blank" style="color:var(--green)">Abdelkrim Boujraf</a>.">
 <meta property="og:image" content="assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,200;0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--transition:0.35s ease;}
@@ -690,7 +693,7 @@ function setLang(l){
   lang=l;
   langBtn.textContent=langLabels[l];
   document.querySelectorAll('[data-t]').forEach(el=>{
-    try{const t=JSON.parse(el.getAttribute('data-t'));if(t[l])el.innerHTML=t[l];}catch(e){}
+    try{const t=JSON.parse(el.getAttribute('data-t'));if(t[l])el.innerHTML=t[l];}catch(e){console.warn('data-t parse fail:',e.message,el.getAttribute('data-t').substring(0,80));}
   });
   document.querySelectorAll('.glitch[data-tg]').forEach(el=>{
     try{const t=JSON.parse(el.getAttribute('data-tg'));if(t[l])el.setAttribute('data-text',t[l]);}catch(e){}
