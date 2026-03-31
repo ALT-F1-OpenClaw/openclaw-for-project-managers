@@ -8,6 +8,8 @@
 
 **Available in 3 languages: English, French, Dutch**
 
+[![Preview](assets/preview.png)](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/)
+
 → **[https://alt-f1-openclaw.github.io/openclaw-for-project-managers/](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/)**
 
 Or open `index.html` locally in any browser.
