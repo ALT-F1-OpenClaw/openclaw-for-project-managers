@@ -8,11 +8,13 @@
 
 **Available in 3 languages: English, French, Dutch**
 
-[![Preview](assets/preview.png)](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/)
+[![Preview](assets/preview.png)](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/en/)
 
-→ **[https://alt-f1-openclaw.github.io/openclaw-for-project-managers/](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/)**
+- 🇬🇧 **English:** [/en/](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/en/)
+- 🇫🇷 **Français:** [/fr/](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/fr/)
+- 🇳🇱 **Nederlands:** [/nl/](https://alt-f1-openclaw.github.io/openclaw-for-project-managers/nl/)
 
-Or open `index.html` locally in any browser.
+Or clone and open `en/index.html` locally in any browser.
 
 ## What is this?
 
@@ -25,12 +27,12 @@ A 14-slide interactive presentation showing how [OpenClaw](https://openclaw.ai) 
 
 ## Features
 
-- **Single HTML file** — no build step, no dependencies
+- **14 interactive slides** — terminal aesthetic with JetBrains Mono
+- **3 languages** — English, French, Dutch (dropdown selector)
 - **Dark/light theme** toggle
-- **3 languages** — English, French, Dutch (🌐 button cycles)
 - **Keyboard, click, and touch** navigation
 - **Slide menu** for quick jumping
-- **Terminal aesthetic** with JetBrains Mono
+- **JSON-based i18n** — translations in separate `lang/*.json` files
 
 ## Navigation
 
@@ -39,6 +41,24 @@ A 14-slide interactive presentation showing how [OpenClaw](https://openclaw.ai) 
 - **Swipe** on touch devices
 - **F** for fullscreen
 - **☰ Menu** button for slide overview
+- **🌐 Dropdown** for language switching
+
+## Architecture
+
+```
+index.html              → redirects to /en/
+en/index.html           → English slides (loads lang/en.json)
+fr/index.html           → French slides (loads lang/fr.json)
+nl/index.html           → Dutch slides (loads lang/nl.json)
+lang/en.json            → 131 translation keys (English)
+lang/fr.json            → 131 translation keys (French)
+lang/nl.json            → 131 translation keys (Dutch)
+template.html           → shared HTML template (source)
+generate.py             → generates en/fr/nl from template + JSON
+assets/                 → images, favicon
+```
+
+One HTML template, three JSON translation files. The slide engine detects the language from the URL path and loads the corresponding JSON via `fetch()`.
 
 ## Links mentioned in the presentation
 
@@ -87,12 +107,13 @@ A 14-slide interactive presentation showing how [OpenClaw](https://openclaw.ai) 
 
 ### Author
 
+- [Abdelkrim Boujraf](https://be.linkedin.com/in/abdelkrimboujraf) — LinkedIn
 - [ALT-F1 SRL](https://www.alt-f1.be) — Brussels
-- [XFlowData](https://www.xflowdata.com) — Partner
+- [XFlowData](https://xflowdata.com) — Partner
 
 ## Inspired by
 
-Design pattern from [last-line.dev](https://github.com/mmaudet/last-line.dev) by Michel-Marie Maudet.
+Design pattern from [last-line.dev](https://github.com/mmaudet/last-line.dev) by [Michel-Marie Maudet](https://github.com/mmaudet), [Linagora](https://linagora.com).
 
 ## License
 
