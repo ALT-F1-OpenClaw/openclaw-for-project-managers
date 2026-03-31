@@ -3,22 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Whiteboard to Gantt — OpenClaw for Project Managers</title>
-<meta name="description" content="From sticky notes to structured timelines. How OpenClaw turns whiteboard chaos into actionable Gantt charts for project managers.">
+<title>How I Use OpenClaw and AI Skills to Run My Projects</title>
+<meta name="description" content="PRINCE2, PMBoK or PMI for dummies like me. By Abdelkrim Boujraf.">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-<!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Whiteboard to Gantt — OpenClaw for Project Managers">
-<meta property="og:description" content="From sticky notes to structured timelines. How OpenClaw turns whiteboard chaos into actionable Gantt charts.">
+<meta property="og:title" content="How I Use OpenClaw and AI Skills to Run My Projects">
+<meta property="og:description" content="PRINCE2, PMBoK or PMI for dummies like me. By Abdelkrim Boujraf.">
 <meta property="og:image" content="assets/og-image.png">
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Whiteboard to Gantt — OpenClaw for Project Managers">
-<meta name="twitter:description" content="From sticky notes to structured timelines. OpenClaw for project managers.">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,200;0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{--transition:0.35s ease;}
-
 body.light{
   --bg:#f5f4f0;--bg2:#eeecea;--bg3:#e5e3de;--surface:#ffffff;
   --border:#d5d2cc;--border2:#bbb8b0;
@@ -35,26 +30,22 @@ body.dark{
   --text:#e8e8e8;--text-dim:#777;--text-muted:#3a3a3a;
   --prompt-text:#00ff88;--shadow:none;
 }
-
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{width:100%;height:100%;overflow:hidden;}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;transition:background var(--transition),color var(--transition);}
-
 body.dark #scanlines{opacity:1;}body.light #scanlines{opacity:0;}
 #scanlines{position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);pointer-events:none;z-index:100;transition:opacity var(--transition);}
 
-/* TOOLBAR */
-#toolbar{position:fixed;top:18px;right:22px;display:flex;gap:8px;z-index:500;pointer-events:auto;}
-.tb-btn{border:1px solid var(--border2);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.07em;padding:7px 13px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow);-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;}
+#toolbar{position:fixed;top:18px;right:22px;display:flex;gap:8px;z-index:500;}
+.tb-btn{border:1px solid var(--border2);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.07em;padding:7px 13px;cursor:pointer;transition:all .2s;box-shadow:var(--shadow);user-select:none;}
 .tb-btn:hover,.tb-btn:active{color:var(--green);border-color:var(--green);}
 .tb-btn:active{transform:scale(.95);}
 
-/* SLIDES */
 #presentation{width:100vw;height:100vh;position:relative;z-index:1;}
 .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:4vh 6vw 6vh;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow:hidden;}
 .slide.active{opacity:1;pointer-events:all;}
+.slide.scrollable{overflow-y:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;padding-top:5vh;}
 
-/* PROGRESS */
 #progress-bar{position:fixed;bottom:0;left:0;height:2px;background:var(--green);transition:width .5s ease;z-index:200;}
 body.dark #progress-bar{box-shadow:0 0 6px var(--green);}
 #slide-counter{position:fixed;bottom:18px;right:22px;font-size:11px;color:var(--text-muted);letter-spacing:.1em;z-index:200;}
@@ -63,86 +54,81 @@ body.dark #progress-bar{box-shadow:0 0 6px var(--green);}
 .key{display:inline-block;border:1px solid var(--border2);padding:1px 6px;font-size:10px;color:var(--text-dim);background:var(--surface);border-radius:2px;cursor:pointer;transition:all .2s;user-select:none;}
 .key:hover{color:var(--green);border-color:var(--green);}
 
-/* TYPOGRAPHY */
 .prompt{font-size:12px;color:var(--text-muted);letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
 .prompt::before{content:'$';color:var(--green);font-weight:700;}
-.h-giant{font-size:clamp(2.6rem,6vw,5.5rem);font-weight:700;line-height:1.04;letter-spacing:-.03em;margin-bottom:.18em;}
-.h-large{font-size:clamp(1.8rem,3.4vw,3.2rem);font-weight:700;line-height:1.1;letter-spacing:-.025em;margin-bottom:.3em;}
-.h-medium{font-size:clamp(1.3rem,2.4vw,2rem);font-weight:700;line-height:1.15;letter-spacing:-.02em;margin-bottom:.3em;}
-.accent{color:var(--green);}.dim{color:var(--text-dim);}.amber-c{color:var(--amber);}.strike{text-decoration:line-through;color:var(--text-muted);}
-.body-text{font-size:clamp(.9rem,1.4vw,1.1rem);color:var(--text-dim);line-height:1.78;max-width:72ch;}
+.h-giant{font-size:clamp(2.2rem,5vw,4.5rem);font-weight:700;line-height:1.08;letter-spacing:-.03em;margin-bottom:.18em;}
+.h-large{font-size:clamp(1.6rem,3vw,2.8rem);font-weight:700;line-height:1.1;letter-spacing:-.025em;margin-bottom:.3em;}
+.accent{color:var(--green);}.dim{color:var(--text-dim);}.amber-c{color:var(--amber);}
+.body-text{font-size:clamp(.85rem,1.3vw,1.05rem);color:var(--text-dim);line-height:1.78;max-width:76ch;}
 .body-text .hl{color:var(--text);font-weight:700;}.body-text .gr{color:var(--green);}
+.body-text a{color:var(--green);text-decoration:none;}.body-text a:hover{text-decoration:underline;}
 .sep{width:40px;height:2px;background:var(--green);margin:14px 0;}
 body.dark .sep{box-shadow:0 0 6px var(--green);}
 
-/* TERMINAL */
-.terminal{background:#111;border:1px solid var(--border2);font-size:13px;line-height:1.9;position:relative;overflow:hidden;box-shadow:var(--shadow);margin-top:18px;}
+.terminal{background:#111;border:1px solid var(--border2);font-size:12px;line-height:1.9;position:relative;overflow:hidden;box-shadow:var(--shadow);margin-top:14px;max-width:820px;}
 body.light .terminal{background:#1a1a18;border-color:#444;}
-.t-head{background:#222;padding:8px 14px;display:flex;align-items:center;gap:7px;}
-.dot{width:11px;height:11px;border-radius:50%;}
+.t-head{background:#222;padding:7px 14px;display:flex;align-items:center;gap:7px;}
+.dot{width:10px;height:10px;border-radius:50%;}
 .dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
-.t-body{padding:14px 18px;}
+.t-body{padding:12px 16px;}
 .t-cmd{color:var(--prompt-text);}
-.t-out{color:#999;padding-left:20px;display:block;}
+.t-out{color:#999;padding-left:18px;display:block;}
 .t-comment{color:#444;font-style:italic;display:block;}
 .t-hi{color:var(--amber);}.t-acc{color:var(--prompt-text);}
 .t-line{display:flex;gap:10px;}
 
-/* METRICS */
-.metrics-row{display:flex;gap:14px;margin-top:20px;width:100%;}
-.metric-card{border:1px solid var(--border2);padding:20px 24px;flex:1;background:var(--surface);position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.metrics-row{display:flex;gap:14px;margin-top:16px;width:100%;}
+.metric-card{border:1px solid var(--border2);padding:18px 22px;flex:1;background:var(--surface);position:relative;overflow:hidden;box-shadow:var(--shadow);}
 .metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--green);}
 body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
-.metric-num{font-size:clamp(1.6rem,3vw,2.6rem);font-weight:700;color:var(--green);line-height:1;margin-bottom:8px;}
-.metric-label{font-size:12px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;line-height:1.5;}
+.metric-num{font-size:clamp(1.4rem,2.6vw,2.2rem);font-weight:700;color:var(--green);line-height:1;margin-bottom:6px;}
+.metric-label{font-size:11px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;line-height:1.5;}
 
-/* STEP CARDS */
-.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;width:100%;}
-.step-card{border:1px solid var(--border2);padding:20px;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;}
-.step-num{font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:8px;font-weight:700;}
-.step-title{font-size:15px;font-weight:700;color:var(--green);margin-bottom:5px;}
-.step-stack{font-size:10px;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
-.step-desc{font-size:12px;color:var(--text-dim);line-height:1.68;flex:1;}
-
-/* PHASES */
-.phases-full{display:flex;flex-direction:column;gap:10px;width:100%;}
-.phase{display:grid;grid-template-columns:28px 1fr;gap:14px;align-items:start;padding:13px 16px;border-left:2px solid var(--border2);background:var(--surface);box-shadow:var(--shadow);transition:border-color .3s,background .3s;}
+.phases-full{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:14px;}
+.phase{display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start;padding:11px 14px;border-left:2px solid var(--border2);background:var(--surface);box-shadow:var(--shadow);transition:border-color .3s,background .3s;}
 .phase.active-phase{border-left-color:var(--green);background:var(--green-dim);}
 .phase-num{color:var(--text-muted);font-size:11px;padding-top:2px;font-weight:700;}
 .phase.active-phase .phase-num{color:var(--green);}
-.phase-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.phase-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
 .phase.active-phase .phase-title{color:var(--green);}
-.phase-desc{font-size:12px;color:var(--text-dim);line-height:1.62;}
-.phase-tag{display:inline-block;font-size:9px;padding:1px 7px;border:1px solid var(--border2);color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-left:8px;vertical-align:middle;}
+.phase-desc{font-size:11px;color:var(--text-dim);line-height:1.62;}
+.phase-tag{display:inline-block;font-size:9px;padding:1px 6px;border:1px solid var(--border2);color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-left:6px;vertical-align:middle;}
 .phase.active-phase .phase-tag{border-color:var(--green);color:var(--green);}
 
-/* TWO COL */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;width:100%;}
-.col-card{border:1px solid var(--border2);padding:20px;background:var(--surface);box-shadow:var(--shadow);}
-.col-title{font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;font-weight:700;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;width:100%;}
+.col-card{border:1px solid var(--border2);padding:16px;background:var(--surface);box-shadow:var(--shadow);}
+.col-title{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-weight:700;}
 .col-title::before{content:'●';font-size:9px;}
 .col-card.good .col-title{color:var(--green);}.col-card.good .col-title::before{color:var(--green);}
 .col-card.old .col-title{color:var(--amber);}.col-card.old .col-title::before{color:var(--amber);}
-.col-item{font-size:12px;color:var(--text-dim);padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.col-item{font-size:11px;color:var(--text-dim);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:7px;line-height:1.5;}
 .col-item:last-child{border-bottom:none;}
-.col-item::before{content:'→';color:var(--text-muted);font-size:10px;flex-shrink:0;margin-top:2px;}
+.col-item::before{content:'→';color:var(--text-muted);font-size:10px;flex-shrink:0;margin-top:1px;}
 
-/* QUESTIONS */
-.questions-list{display:flex;flex-direction:column;gap:0;margin-top:18px;width:100%;}
-.question-item{display:grid;grid-template-columns:26px 1fr;gap:14px;font-size:14px;line-height:1.75;color:var(--text-dim);padding:16px 0;border-bottom:1px solid var(--border);}
-.question-item:last-child{border-bottom:none;}
-.q-mark{color:var(--amber);font-weight:700;font-size:18px;}
-.question-item strong{color:var(--text);}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px;width:100%;}
+.step-card{border:1px solid var(--border2);padding:16px;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.step-num{font-size:10px;color:var(--green);letter-spacing:.1em;margin-bottom:6px;font-weight:700;}
+.step-title{font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;}
+.step-desc{font-size:11px;color:var(--text-dim);line-height:1.6;flex:1;}
 
-/* CTA */
-.cta-box{border:1px solid var(--green);padding:30px 36px;margin-top:22px;max-width:780px;position:relative;background:var(--green-dim);box-shadow:var(--shadow);}
+.cta-box{border:1px solid var(--green);padding:24px 28px;margin-top:16px;max-width:820px;position:relative;background:var(--green-dim);box-shadow:var(--shadow);}
 .cta-box::before{content:attr(data-label);position:absolute;top:-9px;left:20px;background:var(--bg);padding:0 10px;font-size:10px;letter-spacing:.14em;color:var(--green);font-weight:700;}
-.cta-text{font-size:clamp(.95rem,1.5vw,1.15rem);line-height:1.8;color:var(--text);margin-bottom:18px;}
+.cta-text{font-size:clamp(.85rem,1.3vw,1.05rem);line-height:1.78;color:var(--text);margin-bottom:14px;}
 .cta-text strong{color:var(--green);}
-.cta-contact{font-size:13px;color:var(--text-dim);display:flex;flex-direction:column;gap:5px;}
+.cta-contact{font-size:12px;color:var(--text-dim);display:flex;flex-direction:column;gap:4px;}
 .cta-contact a{color:var(--green);text-decoration:none;}.cta-contact a:hover{text-decoration:underline;}
 
-/* ANIMATIONS */
+.skills-list{margin-top:14px;width:100%;}
+.skill-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);line-height:1.5;}
+.skill-row:last-child{border-bottom:none;}
+.skill-row a{color:var(--green);text-decoration:none;word-break:break-all;}.skill-row a:hover{text-decoration:underline;}
+.skill-row strong{color:var(--text);}
+.skill-row::before{content:'→';color:var(--green);font-size:10px;flex-shrink:0;margin-top:2px;}
+
+.bio{margin-top:16px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--text-dim);line-height:1.7;max-width:76ch;}
+.bio a{color:var(--green);text-decoration:none;}.bio a:hover{text-decoration:underline;}
+.bio strong{color:var(--text);}
+
 .slide.active .ai{animation:fadeUp .44s ease forwards;opacity:0;}
 .slide.active .ai:nth-child(1){animation-delay:.04s;}
 .slide.active .ai:nth-child(2){animation-delay:.12s;}
@@ -150,11 +136,10 @@ body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
 .slide.active .ai:nth-child(4){animation-delay:.30s;}
 .slide.active .ai:nth-child(5){animation-delay:.39s;}
 .slide.active .ai:nth-child(6){animation-delay:.48s;}
+.slide.active .ai:nth-child(7){animation-delay:.56s;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-
 .blink{animation:blink 1s step-end infinite;color:var(--green);}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-
 .glitch{position:relative;}
 .glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;pointer-events:none;}
 .glitch::before{color:#ff0044;animation:gb 5s infinite;clip-path:polygon(0 25%,100% 25%,100% 45%,0 45%);}
@@ -162,59 +147,37 @@ body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
 @keyframes gb{0%,88%,100%{transform:none;opacity:0;}90%{transform:translateX(-3px);opacity:.6;}92%{transform:translateX(2px);opacity:.6;}94%{opacity:0;}}
 @keyframes ga{0%,89%,100%{transform:none;opacity:0;}91%{transform:translateX(3px);opacity:.5;}93%{transform:translateX(-2px);opacity:.5;}95%{opacity:0;}}
 
-/* SLIDE MENU */
 #slide-menu{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 #slide-menu.open{display:flex;}
-#slide-menu-inner{background:var(--surface);border:1px solid var(--border2);max-width:420px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.3);padding:0;}
+#slide-menu-inner{background:var(--surface);border:1px solid var(--border2);max-width:440px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.3);padding:0;}
 #slide-menu-inner .sm-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:14px 18px 8px;border-bottom:1px solid var(--border);}
-.sm-item{display:flex;align-items:center;gap:12px;padding:10px 18px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-dim);text-decoration:none;}
+.sm-item{display:flex;align-items:center;gap:12px;padding:9px 18px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-dim);}
 .sm-item:last-child{border-bottom:none;}
 .sm-item:hover{background:var(--green-dim);color:var(--text);}
 .sm-item.sm-active{color:var(--green);font-weight:700;}
 .sm-num{font-size:10px;color:var(--text-muted);min-width:20px;text-align:right;font-weight:700;}
 .sm-item.sm-active .sm-num{color:var(--green);}
 
-/* i18n */
-.i18n-en{display:inline;}.i18n-fr{display:none;}
-
-/* FLOW DIAGRAM */
-.flow-row{display:flex;align-items:center;gap:12px;margin-top:18px;width:100%;flex-wrap:wrap;}
-.flow-box{border:1px solid var(--border2);padding:14px 18px;background:var(--surface);box-shadow:var(--shadow);text-align:center;flex:1;min-width:120px;}
-.flow-box.highlight{border-color:var(--green);background:var(--green-dim);}
-.flow-box .fb-icon{font-size:24px;margin-bottom:6px;}
-.flow-box .fb-label{font-size:11px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;font-weight:700;}
-.flow-box.highlight .fb-label{color:var(--green);}
-.flow-arrow{font-size:20px;color:var(--text-muted);flex-shrink:0;}
-
 @media(max-width:700px){
   .slide{padding:3vh 5vw 14vh;justify-content:flex-start;padding-top:6vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .slide.active{overflow-y:auto;}
-  .h-giant{font-size:clamp(1.6rem,8vw,2.4rem);}
-  .h-large{font-size:clamp(1.2rem,5.5vw,1.7rem);}
-  .body-text{font-size:clamp(.82rem,3.5vw,.95rem);line-height:1.65;}
+  .h-giant{font-size:clamp(1.5rem,7vw,2.2rem);}
+  .h-large{font-size:clamp(1.1rem,5vw,1.6rem);}
+  .body-text{font-size:clamp(.78rem,3.2vw,.92rem);line-height:1.65;}
   .prompt{font-size:10px;margin-bottom:10px;}
   #toolbar{top:10px;right:10px;gap:5px;}
   .tb-btn{font-size:10px;padding:5px 9px;}
   #nav-hint{display:none;}
   #slide-counter{bottom:10px;right:12px;font-size:10px;}
   .steps-grid,.two-col{grid-template-columns:1fr;}
-  .metrics-row{flex-direction:column;gap:10px;}
-  .metric-card{padding:14px 16px;}
-  .metric-num{font-size:clamp(1.2rem,5vw,1.6rem)!important;}
-  .metric-label{font-size:10px;}
-  .terminal{font-size:11px;margin-top:12px;}
+  .metrics-row{flex-direction:column;gap:8px;}
+  .metric-card{padding:12px 14px;}
+  .terminal{font-size:10px;margin-top:10px;}
   .t-body{padding:10px 12px;}
-  .t-out{padding-left:12px;font-size:10px;}
-  .question-item{font-size:12px;padding:12px 0;gap:10px;}
-  .q-mark{font-size:15px;}
-  .cta-box{padding:18px 16px;margin-top:14px;}
-  .cta-text{font-size:clamp(.85rem,3.5vw,1rem);}
-  .cta-contact{font-size:11px;}
-  .col-item{font-size:11px;}
-  .col-title{font-size:12px;}
-  .sep{margin:10px 0;}
-  .flow-row{flex-direction:column;gap:8px;}
-  .flow-arrow{transform:rotate(90deg);}
+  .phase-title{font-size:12px;}.phase-desc{font-size:10px;}
+  .col-item{font-size:10px;}.col-title{font-size:11px;}
+  .cta-box{padding:16px 14px;margin-top:12px;}
+  .sep{margin:8px 0;}
 }
 </style>
 </head>
@@ -231,300 +194,405 @@ body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
 
 <div id="presentation">
 
-<!-- 0 · TITLE -->
+<!-- S0 · TITLE -->
 <div class="slide active" id="s0">
-  <div class="ai" style="font-size:12px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px"
-    data-t='{"en":"whiteboard-to-gantt /// openclaw for project managers","fr":"whiteboard-to-gantt /// openclaw pour chefs de projet"}'>whiteboard-to-gantt /// openclaw for project managers</div>
+  <div class="ai" style="font-size:11px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:24px"
+    data-t='{"en":"openclaw-for-project-managers /// alt-f1 · 2026","fr":"openclaw-pour-chefs-de-projet /// alt-f1 · 2026","nl":"openclaw-voor-projectmanagers /// alt-f1 · 2026"}'>openclaw-for-project-managers /// alt-f1 · 2026</div>
   <div class="ai">
-    <div class="h-giant glitch" data-text="From sticky notes"
-      data-t='{"en":"From sticky notes","fr":"Des post-its"}'>From sticky notes</div>
-    <div class="h-giant"><span class="accent" data-t='{"en":"to Gantt charts","fr":"aux diagrammes de Gantt"}'>to Gantt charts</span></div>
-    <div class="h-giant"><span class="dim" data-t='{"en":"in seconds","fr":"en quelques secondes"}'>in seconds</span><span class="blink">_</span></div>
+    <div class="h-giant glitch" data-text="How I Use OpenClaw"
+      data-t='{"en":"How I Use OpenClaw","fr":"Comment j&apos;utilise OpenClaw","nl":"Hoe ik OpenClaw gebruik"}'
+      data-tg='{"en":"How I Use OpenClaw","fr":"Comment j&apos;utilise OpenClaw","nl":"Hoe ik OpenClaw gebruik"}'>How I Use OpenClaw</div>
+    <div class="h-giant"><span class="accent" data-t='{"en":"and AI Skills","fr":"et les Skills IA","nl":"en AI Skills"}'>and AI Skills</span></div>
+    <div class="h-giant"><span class="dim" data-t='{"en":"to Run My Projects","fr":"pour gérer mes projets","nl":"om mijn projecten te beheren"}'>to Run My Projects</span><span class="blink">_</span></div>
   </div>
+  <div class="ai" style="margin-top:8px;font-size:13px;color:var(--text-dim)"
+    data-t='{"en":"PRINCE2, PMBoK or PMI for dummies like me","fr":"PRINCE2, PMBoK ou PMI pour les nuls comme moi","nl":"PRINCE2, PMBoK of PMI voor dummies zoals ik"}'>PRINCE2, PMBoK or PMI for dummies like me</div>
   <div class="sep ai"></div>
-  <div class="body-text ai"
-    data-t='{"en":"How <span class=\"hl\">OpenClaw</span> turns whiteboard chaos into structured, actionable project timelines.<br>A walkthrough for project managers. No code required.","fr":"Comment <span class=\"hl\">OpenClaw</span> transforme le chaos du tableau blanc en plannings structurés et actionnables.<br>Un guide pour chefs de projet. Aucun code requis."}'>
-    How <span class="hl">OpenClaw</span> turns whiteboard chaos into structured, actionable project timelines.<br>A walkthrough for project managers. No code required.</div>
+  <div class="ai" style="font-size:13px;color:var(--text-muted);line-height:2">
+    <div data-t='{"en":"By Abdelkrim Boujraf — 30 March 2026","fr":"Par Abdelkrim Boujraf — 30 mars 2026","nl":"Door Abdelkrim Boujraf — 30 maart 2026"}'>By Abdelkrim Boujraf — 30 March 2026</div>
+    <div data-t='{"en":"Founder, ALT-F1 SRL · Partner, XFlowData · Brussels &amp; Tunisia","fr":"Fondateur, ALT-F1 SRL · Partenaire, XFlowData · Bruxelles &amp; Tunisie","nl":"Oprichter, ALT-F1 SRL · Partner, XFlowData · Brussel &amp; Tunesië"}'>Founder, ALT-F1 SRL · Partner, XFlowData · Brussels &amp; Tunisia</div>
+  </div>
 </div>
 
-<!-- 1 · THE PROBLEM -->
-<div class="slide" id="s1">
-  <div class="prompt ai" data-t='{"en":"cat ~/frustrations.log","fr":"cat ~/frustrations.log"}'>cat ~/frustrations.log</div>
+<!-- S1 · THE PROBLEM -->
+<div class="slide scrollable" id="s1">
+  <div class="prompt ai" data-t='{"en":"cat ~/frustrations.log","fr":"cat ~/frustrations.log","nl":"cat ~/frustrations.log"}'>cat ~/frustrations.log</div>
   <div class="h-large ai">
-    <span data-t='{"en":"The whiteboard is","fr":"Le tableau blanc est"}'>The whiteboard is</span> <span class="accent" data-t='{"en":"great.","fr":"génial."}'>great.</span><br>
-    <span class="dim" style="font-size:.58em;font-weight:400" data-t='{"en":"Until the meeting ends.","fr":"Jusqu&apos;à la fin de la réunion."}'>Until the meeting ends.</span>
+    <span data-t='{"en":"Project management tools are","fr":"Les outils de gestion de projet sont","nl":"Projectmanagementtools zijn"}'>Project management tools are</span> <span class="accent" data-t='{"en":"powerful.","fr":"puissants.","nl":"krachtig."}'>powerful.</span><br>
+    <span class="dim" style="font-size:.55em;font-weight:400" data-t='{"en":"Until you use them.","fr":"Jusqu&apos;à ce qu&apos;on les utilise.","nl":"Tot je ze gebruikt."}'>Until you use them.</span>
   </div>
   <div class="sep ai"></div>
   <div class="body-text ai"
-    data-t='{"en":"You brainstorm tasks, draw dependencies, stick deadlines on the wall. Then someone takes a blurry photo and emails it to the team.<br><br><span class=\"hl\">Two days later, nobody remembers what was decided.</span> The Gantt chart in your PM tool looks nothing like what was on the board.","fr":"Vous brainstormez les tâches, dessinez les dépendances, collez les deadlines au mur. Puis quelqu&apos;un prend une photo floue et l&apos;envoie par email.<br><br><span class=\"hl\">Deux jours plus tard, personne ne se souvient de ce qui a été décidé.</span> Le Gantt dans votre outil PM ne ressemble en rien au tableau."}'>
-    You brainstorm tasks, draw dependencies, stick deadlines on the wall. Then someone takes a blurry photo and emails it to the team.<br><br><span class="hl">Two days later, nobody remembers what was decided.</span> The Gantt chart in your PM tool looks nothing like what was on the board.</div>
+    data-t='{"en":"Project management tools are powerful. OpenProject, Jira, HubSpot — they can do almost anything. But &quot;can do&quot; and &quot;actually get things done&quot; are separated by a simple gap: <span class=\"hl\">the manual effort</span>.<br><br>Setting up a project properly — creating work streams, work packages, backlogs, sprints, assigning members, configuring versions, linking dependencies, writing descriptions, organizing categories — takes hours.<br><br>Not because it&apos;s hard. Because it&apos;s tedious. And tedious work gets skipped or postponed.<br><br>The result? Projects start with a Gantt chart that looks great on Monday and is outdated by Wednesday.<br><br>I tried, by chance to fix that.","fr":"Les outils de gestion de projet sont puissants. OpenProject, Jira, HubSpot — ils peuvent presque tout faire. Mais &quot;pouvoir faire&quot; et &quot;faire vraiment les choses&quot; sont séparés par un simple fossé : <span class=\"hl\">l&apos;effort manuel</span>.<br><br>Mettre en place un projet correctement — créer des flux de travail, des work packages, des backlogs, des sprints, assigner des membres, configurer des versions, lier les dépendances, écrire des descriptions, organiser les catégories — prend des heures.<br><br>Pas parce que c&apos;est difficile. Parce que c&apos;est fastidieux. Et le travail fastidieux est ignoré ou reporté.<br><br>Le résultat ? Les projets démarrent avec un diagramme de Gantt qui a fière allure le lundi et qui est obsolète le mercredi.<br><br>J&apos;ai essayé, par hasard, de résoudre ça.","nl":"Projectmanagementtools zijn krachtig. OpenProject, Jira, HubSpot — ze kunnen bijna alles. Maar &quot;kunnen doen&quot; en &quot;daadwerkelijk dingen gedaan krijgen&quot; worden gescheiden door een simpele kloof: <span class=\"hl\">de handmatige inspanning</span>.<br><br>Een project goed opzetten — werkstromen aanmaken, work packages, backlogs, sprints, leden toewijzen, versies configureren, afhankelijkheden koppelen, beschrijvingen schrijven, categorieën organiseren — kost uren.<br><br>Niet omdat het moeilijk is. Omdat het vervelend is. En vervelend werk wordt overgeslagen of uitgesteld.<br><br>Het resultaat? Projecten starten met een Gantt-diagram dat er maandag geweldig uitziet en woensdag al verouderd is.<br><br>Ik probeerde, bij toeval, dat op te lossen."}'>
+    Project management tools are powerful. OpenProject, Jira, HubSpot — they can do almost anything. But &quot;can do&quot; and &quot;actually get things done&quot; are separated by a simple gap: <span class="hl">the manual effort</span>.<br><br>Setting up a project properly — creating work streams, work packages, backlogs, sprints, assigning members, configuring versions, linking dependencies, writing descriptions, organizing categories — takes hours.<br><br>Not because it's hard. Because it's tedious. And tedious work gets skipped or postponed.<br><br>The result? Projects start with a Gantt chart that looks great on Monday and is outdated by Wednesday.<br><br>I tried, by chance to fix that.</div>
 </div>
 
-<!-- 2 · THE FLOW -->
-<div class="slide" id="s2">
-  <div class="prompt ai">openclaw --flow whiteboard-to-gantt</div>
-  <div class="h-large ai" data-t='{"en":"The <span class=\"accent\">pipeline</span>","fr":"Le <span class=\"accent\">pipeline</span>"}'>The <span class="accent">pipeline</span></div>
-  <div class="flow-row ai">
-    <div class="flow-box">
-      <div class="fb-icon">📸</div>
-      <div class="fb-label" data-t='{"en":"Snap","fr":"Photo"}'>Snap</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box">
-      <div class="fb-icon">🧠</div>
-      <div class="fb-label" data-t='{"en":"Understand","fr":"Comprendre"}'>Understand</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box">
-      <div class="fb-icon">📋</div>
-      <div class="fb-label" data-t='{"en":"Structure","fr":"Structurer"}'>Structure</div>
-    </div>
-    <div class="flow-arrow">→</div>
-    <div class="flow-box highlight">
-      <div class="fb-icon">📊</div>
-      <div class="fb-label" data-t='{"en":"Gantt","fr":"Gantt"}'>Gantt</div>
-    </div>
-  </div>
-  <div class="body-text ai" style="margin-top:20px"
-    data-t='{"en":"Take a photo of your whiteboard → OpenClaw reads it with vision → extracts tasks, owners, dependencies, dates → generates a structured Gantt chart.<br><br>Directly into <span class=\"hl\">OpenProject, Jira, or a standalone HTML export</span>.","fr":"Prenez une photo du tableau → OpenClaw la lit avec la vision → extrait tâches, responsables, dépendances, dates → génère un diagramme de Gantt structuré.<br><br>Directement dans <span class=\"hl\">OpenProject, Jira ou un export HTML autonome</span>."}'>
-    Take a photo of your whiteboard → OpenClaw reads it with vision → extracts tasks, owners, dependencies, dates → generates a structured Gantt chart.<br><br>Directly into <span class="hl">OpenProject, Jira, or a standalone HTML export</span>.</div>
+<!-- S2 · AN OLD IDEA -->
+<div class="slide scrollable" id="s2">
+  <div class="prompt ai">ls ~/archive/</div>
+  <div class="h-large ai"><span data-t='{"en":"2017-10 Project","fr":"2017-10 Project","nl":"2017-10 Project"}'>2017-10 Project</span> <span class="accent" data-t='{"en":"management by","fr":"management by","nl":"management by"}'>management by</span></div>
+  <div class="sep ai"></div>
+  <div class="body-text ai"
+    data-t='{"en":"I got back to one of the many projects I never finished because that was too complex to build at the time.<br><br>Here is the name of the directory ... it says it all &quot;2017-10 Project management by&quot;<br><br>The description of the project resided in one screenshot named &quot;smart editor.PNG&quot;.<br><br>The idea was simple: write in plain English a description of the activity and produces the equivalent in a structured database schema like Jira, Wrike etc: who does what, when, for how long, list dependencies etc etc","fr":"Je suis revenu sur un des nombreux projets que je n&apos;avais jamais terminés parce que c&apos;était trop complexe à construire à l&apos;époque.<br><br>Voici le nom du répertoire ... il dit tout &quot;2017-10 Project management by&quot;<br><br>La description du projet résidait dans une seule capture d&apos;écran nommée &quot;smart editor.PNG&quot;.<br><br>L&apos;idée était simple : écrire en anglais courant une description de l&apos;activité et produire l&apos;équivalent dans un schéma de base de données structuré comme Jira, Wrike etc : qui fait quoi, quand, pour combien de temps, lister les dépendances etc etc","nl":"Ik ging terug naar een van de vele projecten die ik nooit had afgemaakt omdat het te complex was om te bouwen op dat moment.<br><br>Hier is de naam van de map ... die zegt alles &quot;2017-10 Project management by&quot;<br><br>De beschrijving van het project zat in één screenshot genaamd &quot;smart editor.PNG&quot;.<br><br>Het idee was simpel: schrijf in gewoon Engels een beschrijving van de activiteit en produceer het equivalent in een gestructureerd databaseschema zoals Jira, Wrike etc: wie doet wat, wanneer, hoe lang, afhankelijkheden opsommen etc etc"}'>
+    I got back to one of the many projects I never finished because that was too complex to build at the time.<br><br>Here is the name of the directory ... it says it all &quot;2017-10 Project management by&quot;<br><br>The description of the project resided in one screenshot named &quot;smart editor.PNG&quot;.<br><br>The idea was simple: write in plain English a description of the activity and produces the equivalent in a structured database schema like Jira, Wrike etc: who does what, when, for how long, list dependencies etc etc</div>
 </div>
 
-<!-- 3 · LIVE DEMO TERMINAL -->
-<div class="slide" id="s3">
-  <div class="prompt ai">openclaw run</div>
-  <div class="h-large ai" data-t='{"en":"See it <span class=\"accent\">happen</span>","fr":"Voyez-le <span class=\"accent\">en action</span>"}'>See it <span class="accent">happen</span></div>
-  <div class="terminal ai" style="max-width:780px">
-    <div class="t-head"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
-    <div class="t-body">
-      <div class="t-line"><span class="t-cmd">$</span><span style="color:#ccc"> openclaw "analyze this whiteboard photo"</span></div>
-      <span class="t-out">● Receiving image from phone camera...</span>
-      <span class="t-out">● Vision model analyzing whiteboard...</span>
-      <span class="t-out">● Found <span class="t-acc">12 tasks</span>, <span class="t-acc">4 milestones</span>, <span class="t-acc">8 dependencies</span></span>
-      <span class="t-out">● Detected owners: <span class="t-hi">Sarah, Mike, Team-Backend, Team-Design</span></span>
-      <span class="t-out">● Generating Gantt timeline...</span>
-      <span class="t-out">● Pushing to OpenProject... <span class="t-acc">✓ 12 work packages created</span></span>
-      <span class="t-comment" style="margin-top:6px"
-        data-t='{"en":"# From photo to structured project in under 30 seconds.","fr":"# De la photo au projet structuré en moins de 30 secondes."}'>
-        # From photo to structured project in under 30 seconds.</span>
-    </div>
-  </div>
-  <div class="body-text ai" style="margin-top:20px"
-    data-t='{"en":"No transcription errors. No lost context. No \"wait, what did we agree on?\"<br>The AI <span class=\"hl\">reads your handwriting, understands spatial relationships, and infers task dependencies</span> from how things are laid out on the board.","fr":"Pas d&apos;erreurs de transcription. Pas de contexte perdu. Pas de \"attends, on avait dit quoi ?\"<br>L&apos;IA <span class=\"hl\">lit votre écriture, comprend les relations spatiales et infère les dépendances</span> à partir de la disposition sur le tableau."}'>
-    No transcription errors. No lost context. No "wait, what did we agree on?"<br>The AI <span class="hl">reads your handwriting, understands spatial relationships, and infers task dependencies</span> from how things are laid out on the board.</div>
-</div>
-
-<!-- 4 · WHAT IT EXTRACTS -->
-<div class="slide" id="s4">
-  <div class="prompt ai">openclaw --inspect extracted-data</div>
-  <div class="h-large ai" data-t='{"en":"What it <span class=\"accent\">sees</span>","fr":"Ce qu&apos;il <span class=\"accent\">voit</span>"}'>What it <span class="accent">sees</span></div>
+<!-- S3 · SEVERAL ATTEMPTS -->
+<div class="slide scrollable" id="s3">
+  <div class="prompt ai">git log --oneline ~/attempts/</div>
+  <div class="h-large ai"><span data-t='{"en":"Several","fr":"Plusieurs","nl":"Meerdere"}'>Several</span> <span class="accent" data-t='{"en":"attempts","fr":"tentatives","nl":"pogingen"}'>attempts</span></div>
   <div class="phases-full ai">
-    <div class="phase active-phase">
+    <div class="phase">
       <div class="phase-num">01</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Tasks & Subtasks","fr":"Tâches & Sous-tâches"}'>Tasks & Subtasks</div>
-        <div class="phase-desc" data-t='{"en":"Sticky notes, bullet points, circled items → structured work packages with titles and descriptions","fr":"Post-its, listes à puces, éléments encerclés → work packages structurés avec titres et descriptions"}'>Sticky notes, bullet points, circled items → structured work packages with titles and descriptions</div>
+        <div class="phase-title"><a href="https://www.nltk.org/" target="_blank" style="color:inherit;text-decoration:none">NLTK</a> <span class="phase-tag">2017</span></div>
+        <div class="phase-desc" data-t='{"en":"I tried a first time implementing Natural Language Processing (NLP) using <a href=\"https://www.nltk.org/\" target=\"_blank\" style=\"color:var(--green)\">NLTK</a>. Unfortunately NLTK required mastering advanced linguistic theories, probabilistic models, and sophisticated text-processing techniques, which made it particularly challenging at the time for me.","fr":"J&apos;ai essayé une première fois d&apos;implémenter le Natural Language Processing (NLP) avec <a href=\"https://www.nltk.org/\" target=\"_blank\" style=\"color:var(--green)\">NLTK</a>. Malheureusement, NLTK nécessitait la maîtrise de théories linguistiques avancées, de modèles probabilistes et de techniques sophistiquées de traitement de texte, ce qui le rendait particulièrement difficile pour moi à l&apos;époque.","nl":"Ik probeerde een eerste keer Natural Language Processing (NLP) te implementeren met <a href=\"https://www.nltk.org/\" target=\"_blank\" style=\"color:var(--green)\">NLTK</a>. Helaas vereiste NLTK het beheersen van geavanceerde taalkundige theorieën, probabilistische modellen en geavanceerde tekstverwerkingstechnieken, wat het destijds bijzonder uitdagend maakte voor mij."}'>I tried a first time implementing Natural Language Processing (NLP) using <a href="https://www.nltk.org/" target="_blank" style="color:var(--green)">NLTK</a>. Unfortunately NLTK required mastering advanced linguistic theories, probabilistic models, and sophisticated text-processing techniques, which made it particularly challenging at the time for me.</div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">02</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Dependencies & Arrows","fr":"Dépendances & Flèches"}'>Dependencies & Arrows</div>
-        <div class="phase-desc" data-t='{"en":"Lines, arrows, \"after X\" annotations → predecessor/successor relationships in the Gantt","fr":"Lignes, flèches, annotations \"après X\" → relations prédécesseur/successeur dans le Gantt"}'>Lines, arrows, "after X" annotations → predecessor/successor relationships in the Gantt</div>
+        <div class="phase-title"><a href="https://rasa.com/" target="_blank" style="color:inherit;text-decoration:none">Rasa</a> <span class="phase-tag">2019</span></div>
+        <div class="phase-desc" data-t='{"en":"I tried a second time in 2019 using <a href=\"https://rasa.com/\" target=\"_blank\" style=\"color:var(--green)\">Rasa</a>, an Open source machine learning framework; It was the beginning of the usage of the GPUs to mine Bitcoins","fr":"J&apos;ai essayé une deuxième fois en 2019 avec <a href=\"https://rasa.com/\" target=\"_blank\" style=\"color:var(--green)\">Rasa</a>, un framework open source de machine learning ; C&apos;était le début de l&apos;utilisation des GPUs pour miner des Bitcoins","nl":"Ik probeerde een tweede keer in 2019 met <a href=\"https://rasa.com/\" target=\"_blank\" style=\"color:var(--green)\">Rasa</a>, een open source machine learning framework; Het was het begin van het gebruik van GPU&apos;s om Bitcoins te minen"}'>I tried a second time in 2019 using <a href="https://rasa.com/" target="_blank" style="color:var(--green)">Rasa</a>, an Open source machine learning framework; It was the beginning of the usage of the GPUs to mine Bitcoins</div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">03</div>
       <div>
-        <div class="phase-title" data-t='{"en":"People & Assignments","fr":"Personnes & Attributions"}'>People & Assignments</div>
-        <div class="phase-desc" data-t='{"en":"Names, initials, team labels → assigned owners on each task","fr":"Noms, initiales, labels d&apos;équipe → responsables assignés à chaque tâche"}'>Names, initials, team labels → assigned owners on each task</div>
+        <div class="phase-title"><a href="https://luis.azure.us/" target="_blank" style="color:inherit;text-decoration:none">LUIS</a> <span class="phase-tag">2020</span></div>
+        <div class="phase-desc" data-t='{"en":"Then a third time somewhere in 2020 Microsoft&apos;s Language Understanding Intelligent Service <a href=\"https://luis.azure.us/\" target=\"_blank\" style=\"color:var(--green)\">LUIS</a>, a cloud-based NLP tool but it didn&apos;t work neither.","fr":"Puis une troisième fois quelque part en 2020 avec le Language Understanding Intelligent Service de Microsoft <a href=\"https://luis.azure.us/\" target=\"_blank\" style=\"color:var(--green)\">LUIS</a>, un outil NLP cloud mais ça n&apos;a pas marché non plus.","nl":"Toen een derde keer ergens in 2020 Microsoft&apos;s Language Understanding Intelligent Service <a href=\"https://luis.azure.us/\" target=\"_blank\" style=\"color:var(--green)\">LUIS</a>, een cloudgebaseerde NLP-tool maar het werkte ook niet."}'>Then a third time somewhere in 2020 Microsoft's Language Understanding Intelligent Service <a href="https://luis.azure.us/" target="_blank" style="color:var(--green)">LUIS</a>, a cloud-based NLP tool but it didn't work neither.</div>
+      </div>
+    </div>
+    <div class="phase active-phase">
+      <div class="phase-num">04</div>
+      <div>
+        <div class="phase-title">OpenClaw + LLMs <span class="phase-tag">2026</span></div>
+        <div class="phase-desc" data-t='{"en":"In February 2026, I decided to give it a try using OpenClaw combined with Large Language Models (LLM) and Skills I implemented. It took me a dozen of hours to reach my initial goal :-/","fr":"En février 2026, j&apos;ai décidé de tenter le coup en utilisant OpenClaw combiné avec des Large Language Models (LLM) et des Skills que j&apos;ai implémentés. Il m&apos;a fallu une douzaine d&apos;heures pour atteindre mon objectif initial :-/","nl":"In februari 2026 besloot ik het te proberen met OpenClaw gecombineerd met Large Language Models (LLM) en Skills die ik heb geïmplementeerd. Het kostte me een tiental uren om mijn oorspronkelijke doel te bereiken :-/"}'>In February 2026, I decided to give it a try using OpenClaw combined with Large Language Models (LLM) and Skills I implemented. It took me a dozen of hours to reach my initial goal :-/</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4 · ENTER OPENCLAW -->
+<div class="slide scrollable" id="s4">
+  <div class="prompt ai">man openclaw</div>
+  <div class="h-large ai"><span data-t='{"en":"Enter","fr":"Voici","nl":"Maak kennis met"}'>Enter</span> <span class="accent">OpenClaw</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"I have learned about <a href=\"https://openclaw.ai\" target=\"_blank\">OpenClaw</a> in February ... after reading the documentation I decided to pass this technology — I thought it was again a useless agent.<br><br>My colleague, Jef Minsart from <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowdata</a> told me that he was participating to a <a href=\"https://www.meetup.com\" target=\"_blank\">meetup.com</a> event organized by Toon Vanagt <a href=\"https://www.meetup.com/openclaw-user-group-belgium/events\" target=\"_blank\">OpenClaw User Group Belgium</a>.<br><br>Jef &quot;forced&quot; me indirectly to study the technology.<br><br><span class=\"hl\">In one sentence, OpenClaw is a Personal AI Assistant (PAT) running like a Linux Server : 24/7.</span><br><br>The user interacts with AI Agents through any Messaging platform like WhatsApp, Telegram, Discord, Signal, Slack, <a href=\"https://github.com/mattermost/mattermost\" target=\"_blank\">Mattermost</a>.<br><br>The difference with Chat Bots like ChatGPT, Gemini or Claude is that the server is alive and can interact with other systems even if you are not &quot;connected&quot;.<br><br>For example, every morning I receive &quot;the list of tasks updated in last 72h&quot; in my feed.","fr":"J&apos;ai découvert <a href=\"https://openclaw.ai\" target=\"_blank\">OpenClaw</a> en février ... après avoir lu la documentation, j&apos;ai décidé de passer cette technologie — je pensais que c&apos;était encore un agent inutile.<br><br>Mon collègue, Jef Minsart de <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowdata</a> m&apos;a dit qu&apos;il participait à un événement <a href=\"https://www.meetup.com\" target=\"_blank\">meetup.com</a> organisé par Toon Vanagt <a href=\"https://www.meetup.com/openclaw-user-group-belgium/events\" target=\"_blank\">OpenClaw User Group Belgium</a>.<br><br>Jef m&apos;a &quot;forcé&quot; indirectement à étudier la technologie.<br><br><span class=\"hl\">En une phrase, OpenClaw est un Assistant IA Personnel (PAT) qui tourne comme un serveur Linux : 24/7.</span><br><br>L&apos;utilisateur interagit avec les Agents IA via n&apos;importe quelle plateforme de messagerie comme WhatsApp, Telegram, Discord, Signal, Slack, <a href=\"https://github.com/mattermost/mattermost\" target=\"_blank\">Mattermost</a>.<br><br>La différence avec les Chat Bots comme ChatGPT, Gemini ou Claude est que le serveur est vivant et peut interagir avec d&apos;autres systèmes même si vous n&apos;êtes pas &quot;connecté&quot;.<br><br>Par exemple, chaque matin je reçois &quot;la liste des tâches mises à jour dans les dernières 72h&quot; dans mon fil.","nl":"Ik hoorde over <a href=\"https://openclaw.ai\" target=\"_blank\">OpenClaw</a> in februari ... na het lezen van de documentatie besloot ik deze technologie te negeren — ik dacht dat het weer een nutteloze agent was.<br><br>Mijn collega, Jef Minsart van <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowdata</a> vertelde me dat hij deelnam aan een <a href=\"https://www.meetup.com\" target=\"_blank\">meetup.com</a> evenement georganiseerd door Toon Vanagt <a href=\"https://www.meetup.com/openclaw-user-group-belgium/events\" target=\"_blank\">OpenClaw User Group Belgium</a>.<br><br>Jef &quot;dwong&quot; me indirect om de technologie te bestuderen.<br><br><span class=\"hl\">In één zin: OpenClaw is een Persoonlijke AI Assistent (PAT) die draait als een Linux Server: 24/7.</span><br><br>De gebruiker communiceert met AI Agents via elk berichtenplatform zoals WhatsApp, Telegram, Discord, Signal, Slack, <a href=\"https://github.com/mattermost/mattermost\" target=\"_blank\">Mattermost</a>.<br><br>Het verschil met Chat Bots zoals ChatGPT, Gemini of Claude is dat de server leeft en kan communiceren met andere systemen zelfs als je niet &quot;verbonden&quot; bent.<br><br>Bijvoorbeeld, elke ochtend ontvang ik &quot;de lijst van taken bijgewerkt in de laatste 72u&quot; in mijn feed."}'>
+    I have learned about <a href="https://openclaw.ai" target="_blank">OpenClaw</a> in February ... after reading the documentation I decided to pass this technology — I thought it was again a useless agent.<br><br>My colleague, Jef Minsart from <a href="https://www.xflowdata.com" target="_blank">XFlowdata</a> told me that he was participating to a <a href="https://www.meetup.com" target="_blank">meetup.com</a> event organized by Toon Vanagt <a href="https://www.meetup.com/openclaw-user-group-belgium/events" target="_blank">OpenClaw User Group Belgium</a>.<br><br>Jef "forced" me indirectly to study the technology.<br><br><span class="hl">In one sentence, OpenClaw is a Personal AI Assistant (PAT) running like a Linux Server : 24/7.</span><br><br>The user interacts with AI Agents through any Messaging platform like WhatsApp, Telegram, Discord, Signal, Slack, <a href="https://github.com/mattermost/mattermost" target="_blank">Mattermost</a>.<br><br>The difference with Chat Bots like ChatGPT, Gemini or Claude is that the server is alive and can interact with other systems even if you are not "connected".<br><br>For example, every morning I receive "the list of tasks updated in last 72h" in my feed.</div>
+  <div class="terminal ai" style="max-width:820px">
+    <div class="t-head"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <div class="t-body">
+      <div class="t-line"><span class="t-cmd">$</span><span style="color:#ccc"> "Set up a daily cron job at 6:00 AM Brussels time that pulls all</span></div>
+      <span class="t-out" style="color:#ccc">DocExtractor work packages updated in the last 72h from OpenProject</span>
+      <span class="t-out" style="color:#ccc">and posts a status report to ⁠news-openproject in Markdown format."</span>
+    </div>
+  </div>
+  <div class="body-text ai" style="margin-top:14px"
+    data-t='{"en":"<span class=\"hl\">A skill</span> is a packaged capability, a set of tools, scripts, and instructions that let the agent interact with real systems like Jira, HubSpot, SAP, Salesforce, Microsoft SharePoint, ServiceNow, Check Point Management, Fortinet, Google Cloud Dataplex, Kaseya etc ...<br><br>I built one of those skills. And it changed how I manage projects.","fr":"<span class=\"hl\">Un skill</span> est une capacité packagée, un ensemble d&apos;outils, de scripts et d&apos;instructions qui permettent à l&apos;agent d&apos;interagir avec des systèmes réels comme Jira, HubSpot, SAP, Salesforce, Microsoft SharePoint, ServiceNow, Check Point Management, Fortinet, Google Cloud Dataplex, Kaseya etc ...<br><br>J&apos;ai construit un de ces skills. Et ça a changé ma façon de gérer mes projets.","nl":"<span class=\"hl\">Een skill</span> is een verpakte mogelijkheid, een set tools, scripts en instructies die de agent laten communiceren met echte systemen zoals Jira, HubSpot, SAP, Salesforce, Microsoft SharePoint, ServiceNow, Check Point Management, Fortinet, Google Cloud Dataplex, Kaseya etc ...<br><br>Ik heb een van die skills gebouwd. En het veranderde hoe ik mijn projecten beheer."}'>
+    <span class="hl">A skill</span> is a packaged capability, a set of tools, scripts, and instructions that let the agent interact with real systems like Jira, HubSpot, SAP, Salesforce, Microsoft SharePoint, ServiceNow, Check Point Management, Fortinet, Google Cloud Dataplex, Kaseya etc ...<br><br>I built one of those skills. And it changed how I manage projects.</div>
+</div>
+
+<!-- S5 · THE OPENPROJECT SKILL -->
+<div class="slide scrollable" id="s5">
+  <div class="prompt ai">openclaw skills --describe openproject</div>
+  <div class="h-large ai"><span data-t='{"en":"The OpenProject Skill:","fr":"Le Skill OpenProject :","nl":"De OpenProject Skill:"}'>The OpenProject Skill:</span> <span class="accent" data-t='{"en":"What It Does","fr":"Ce qu&apos;il fait","nl":"Wat het doet"}'>What It Does</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"The <a href=\"https://clawhub.ai\" target=\"_blank\">openproject-by-altf1be</a> skill gives OpenClaw full operational access to an <a href=\"https://www.openproject.org\" target=\"_blank\">OpenProject</a> instance via the API v3. OpenProject is a powerful Opensource Program/Project management system. We use it for our internal projects at XFlowdata.","fr":"Le skill <a href=\"https://clawhub.ai\" target=\"_blank\">openproject-by-altf1be</a> donne à OpenClaw un accès opérationnel complet à une instance <a href=\"https://www.openproject.org\" target=\"_blank\">OpenProject</a> via l&apos;API v3. OpenProject est un puissant système Open source de gestion de Programme/Projet. Nous l&apos;utilisons pour nos projets internes chez XFlowdata.","nl":"De <a href=\"https://clawhub.ai\" target=\"_blank\">openproject-by-altf1be</a> skill geeft OpenClaw volledige operationele toegang tot een <a href=\"https://www.openproject.org\" target=\"_blank\">OpenProject</a> instantie via de API v3. OpenProject is een krachtig Open source Programma/Projectmanagementsysteem. We gebruiken het voor onze interne projecten bij XFlowdata."}'>
+    The <a href="https://clawhub.ai" target="_blank">openproject-by-altf1be</a> skill gives OpenClaw full operational access to an <a href="https://www.openproject.org" target="_blank">OpenProject</a> instance via the API v3. OpenProject is a powerful Opensource Program/Project management system. We use it for our internal projects at XFlowdata.</div>
+  <div class="two-col ai">
+    <div class="col-card good">
+      <div class="col-title" data-t='{"en":"Core","fr":"Cœur","nl":"Kern"}'>Core</div>
+      <div class="col-item" data-t='{"en":"Work packages — create, read, update, delete, filter","fr":"Work packages — créer, lire, modifier, supprimer, filtrer","nl":"Work packages — aanmaken, lezen, bijwerken, verwijderen, filteren"}'>Work packages — create, read, update, delete, filter</div>
+      <div class="col-item" data-t='{"en":"Projects — create, configure, manage members and roles","fr":"Projets — créer, configurer, gérer membres et rôles","nl":"Projecten — aanmaken, configureren, leden en rollen beheren"}'>Projects — create, configure, manage members and roles</div>
+      <div class="col-item" data-t='{"en":"Members &amp; roles — add users, assign roles","fr":"Membres &amp; rôles — ajouter des utilisateurs, assigner des rôles","nl":"Leden &amp; rollen — gebruikers toevoegen, rollen toewijzen"}'>Members &amp; roles — add users, assign roles</div>
+      <div class="col-item" data-t='{"en":"Versions/milestones — create sprints, set date ranges","fr":"Versions/jalons — créer des sprints, définir les plages de dates","nl":"Versies/mijlpalen — sprints aanmaken, datumbereiken instellen"}'>Versions/milestones — create sprints, set date ranges</div>
+      <div class="col-item" data-t='{"en":"Categories — organize work by domain","fr":"Catégories — organiser le travail par domaine","nl":"Categorieën — werk organiseren per domein"}'>Categories — organize work by domain</div>
+      <div class="col-item" data-t='{"en":"Relations — dependency chains (precedes, blocks, follows)","fr":"Relations — chaînes de dépendance (précède, bloque, suit)","nl":"Relaties — afhankelijkheidsketens (gaat vooraf, blokkeert, volgt)"}'>Relations — dependency chains (precedes, blocks, follows)</div>
+    </div>
+    <div class="col-card good">
+      <div class="col-title" data-t='{"en":"Extended","fr":"Étendu","nl":"Uitgebreid"}'>Extended</div>
+      <div class="col-item" data-t='{"en":"Comments &amp; attachments — add context to any work package","fr":"Commentaires &amp; pièces jointes — ajouter du contexte","nl":"Opmerkingen &amp; bijlagen — context toevoegen aan elk work package"}'>Comments &amp; attachments — add context to any work package</div>
+      <div class="col-item" data-t='{"en":"News — publish project announcements","fr":"Actualités — publier des annonces projet","nl":"Nieuws — projectaankondigingen publiceren"}'>News — publish project announcements</div>
+      <div class="col-item" data-t='{"en":"Notifications, time entries, watchers, wiki pages","fr":"Notifications, saisie de temps, observateurs, pages wiki","nl":"Notificaties, tijdregistratie, watchers, wikipagina&apos;s"}'>Notifications, time entries, watchers, wiki pages</div>
+      <div class="col-item" data-t='{"en":"Custom fields, groups, documents, reminders","fr":"Champs personnalisés, groupes, documents, rappels","nl":"Aangepaste velden, groepen, documenten, herinneringen"}'>Custom fields, groups, documents, reminders</div>
+    </div>
+  </div>
+  <div class="body-text ai" style="margin-top:12px"
+    data-t='{"en":"<span class=\"hl\">All of this is accessible through natural language in a Discord channel.</span>","fr":"<span class=\"hl\">Tout cela est accessible en langage naturel dans un canal Discord.</span>","nl":"<span class=\"hl\">Dit alles is toegankelijk via natuurlijke taal in een Discord-kanaal.</span>"}'>
+    <span class="hl">All of this is accessible through natural language in a Discord channel.</span></div>
+</div>
+
+<!-- S6 · REAL EXAMPLE PART 1 -->
+<div class="slide scrollable" id="s6">
+  <div class="prompt ai">openclaw --replay mistral-ocr-mastering</div>
+  <div class="h-large ai"><span data-t='{"en":"A Real Example:","fr":"Un exemple réel :","nl":"Een echt voorbeeld:"}'>A Real Example:</span> <span class="accent" data-t='{"en":"15 Minutes","fr":"15 Minutes","nl":"15 Minuten"}'>15 Minutes</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"This week, I needed to set up a new project: <span class=\"hl\">Mistral OCR Mastering</span> — a 10-day sprint to explore <a href=\"https://mistral.ai/news/mistral-ocr-3\" target=\"_blank\">Mistral AI&apos;s document processing</a> capabilities and build a proof-of-concept.","fr":"Cette semaine, je devais mettre en place un nouveau projet : <span class=\"hl\">Mistral OCR Mastering</span> — un sprint de 10 jours pour explorer les capacités de <a href=\"https://mistral.ai/news/mistral-ocr-3\" target=\"_blank\">traitement de documents de Mistral AI</a> et construire un proof-of-concept.","nl":"Deze week moest ik een nieuw project opzetten: <span class=\"hl\">Mistral OCR Mastering</span> — een 10-daagse sprint om de <a href=\"https://mistral.ai/news/mistral-ocr-3\" target=\"_blank\">documentverwerkingsmogelijkheden van Mistral AI</a> te verkennen en een proof-of-concept te bouwen."}'>
+    This week, I needed to set up a new project: <span class="hl">Mistral OCR Mastering</span> — a 10-day sprint to explore <a href="https://mistral.ai/news/mistral-ocr-3" target="_blank">Mistral AI's document processing</a> capabilities and build a proof-of-concept.</div>
+  <div class="phases-full ai">
+    <div class="phase">
+      <div class="phase-num">01</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Create the project","fr":"Créer le projet","nl":"Het project aanmaken"}'>Create the project</div>
+        <div class="phase-desc" data-t='{"en":"&quot;create a project mistral-ocr-mastering&quot; → OpenClaw created the project on OpenProject in seconds.","fr":"&quot;create a project mistral-ocr-mastering&quot; → OpenClaw a créé le projet sur OpenProject en quelques secondes.","nl":"&quot;create a project mistral-ocr-mastering&quot; → OpenClaw maakte het project aan op OpenProject in seconden."}'>
+          "create a project mistral-ocr-mastering" → OpenClaw created the project on OpenProject in seconds.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Add members with roles","fr":"Ajouter des membres avec des rôles","nl":"Leden toevoegen met rollen"}'>Add members with roles</div>
+        <div class="phase-desc" data-t='{"en":"&quot;add Clémentine, Mohamed, Jeanne, Jean, Pauline as members. add Béatrice, Pierre and Oumaima as managers&quot; → Five memberships + three with Project Admin roles. No clicking through settings pages.","fr":"&quot;add Clémentine, Mohamed, Jeanne, Jean, Pauline as members. add Béatrice, Pierre and Oumaima as managers&quot; → Cinq memberships + trois avec des rôles Project Admin. Aucun clic dans les pages de paramètres.","nl":"&quot;add Clémentine, Mohamed, Jeanne, Jean, Pauline as members. add Béatrice, Pierre and Oumaima as managers&quot; → Vijf lidmaatschappen + drie met Project Admin rollen. Geen geklik door instellingenpagina&apos;s."}'>
+          "add Clémentine, Mohamed, Jeanne, Jean, Pauline as members. add Béatrice, Pierre and Oumaima as managers" → Five memberships + three with Project Admin roles. No clicking through settings pages.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Write overview from Word doc","fr":"Écrire la vue d&apos;ensemble à partir d&apos;un fichier Word","nl":"Overzicht schrijven vanuit Word-document"}'>Write overview from Word doc</div>
+        <div class="phase-desc" data-t='{"en":"Dropped a .docx file into the chat with meeting notes and said &quot;write an overview of the project&quot; → OpenClaw extracted the content, synthesized it into a structured project description, and pushed it directly to OpenProject. In markdown. With links.","fr":"J&apos;ai déposé un fichier .docx dans le chat avec les notes de réunion et j&apos;ai dit &quot;write an overview of the project&quot; → OpenClaw a extrait le contenu, l&apos;a synthétisé en une description de projet structurée et l&apos;a poussé directement vers OpenProject. En markdown. Avec des liens.","nl":"Ik dropte een .docx-bestand in de chat met vergadernotities en zei &quot;write an overview of the project&quot; → OpenClaw extraheerde de inhoud, synthetiseerde het tot een gestructureerde projectbeschrijving en pushte het direct naar OpenProject. In markdown. Met links."}'>
+          Dropped a .docx file into the chat with meeting notes and said "write an overview of the project" → OpenClaw extracted the content, synthesized it into a structured project description, and pushed it directly to OpenProject. In markdown. With links.</div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">04</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Dates & Milestones","fr":"Dates & Jalons"}'>Dates & Milestones</div>
-        <div class="phase-desc" data-t='{"en":"\"Week 3\", \"March\", \"MVP\" → start/end dates, milestone markers, sprint boundaries","fr":"\"Semaine 3\", \"Mars\", \"MVP\" → dates début/fin, jalons, limites de sprint"}'>\"Week 3\", \"March\", \"MVP\" → start/end dates, milestone markers, sprint boundaries</div>
+        <div class="phase-title" data-t='{"en":"Create work packages from whiteboard","fr":"Créer des work packages depuis le tableau blanc","nl":"Work packages aanmaken vanuit whiteboard"}'>Create work packages from whiteboard</div>
+        <div class="phase-desc" data-t='{"en":"Shared a photo of our architecture whiteboard and said &quot;create work packages categories&quot; → OpenClaw analyzed the image, identified workflow areas, and created 7 fully described work packages — each with acceptance criteria, technical details, and the right type.","fr":"J&apos;ai partagé une photo de notre tableau blanc d&apos;architecture et dit &quot;create work packages categories&quot; → OpenClaw a analysé l&apos;image, identifié les zones de workflow, et créé 7 work packages entièrement décrits — chacun avec des critères d&apos;acceptation, des détails techniques et le bon type.","nl":"Ik deelde een foto van ons architectuur-whiteboard en zei &quot;create work packages categories&quot; → OpenClaw analyseerde de afbeelding, identificeerde werkgebieden en maakte 7 volledig beschreven work packages aan — elk met acceptatiecriteria, technische details en het juiste type."}'>
+          Shared a photo of our architecture whiteboard and said "create work packages categories" → OpenClaw analyzed the image, identified workflow areas, and created 7 fully described work packages — each with acceptance criteria, technical details, and the right type.</div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- S7 · REAL EXAMPLE PART 2 -->
+<div class="slide scrollable" id="s7">
+  <div class="prompt ai">openclaw --replay mistral-ocr-mastering --continue</div>
+  <div class="h-large ai"><span data-t='{"en":"15 Minutes","fr":"15 Minutes","nl":"15 Minuten"}'>15 Minutes</span> <span class="accent" data-t='{"en":"continued","fr":"suite","nl":"vervolg"}'>continued</span></div>
+  <div class="phases-full ai">
     <div class="phase">
       <div class="phase-num">05</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Priority & Urgency","fr":"Priorité & Urgence"}'>Priority & Urgency</div>
-        <div class="phase-desc" data-t='{"en":"Stars, exclamation marks, red markers, underlines → priority levels on work packages","fr":"Étoiles, points d&apos;exclamation, marqueurs rouges, soulignements → niveaux de priorité sur les work packages"}'>Stars, exclamation marks, red markers, underlines → priority levels on work packages</div>
+        <div class="phase-title" data-t='{"en":"Create versions and compress timeline","fr":"Créer des versions et comprimer le planning","nl":"Versies aanmaken en tijdlijn comprimeren"}'>Create versions and compress timeline</div>
+        <div class="phase-desc" data-t='{"en":"&quot;create versions&quot; → 5 versions created. &quot;the project should be finished in 10 network days&quot; → All recompressed into 2-day sprints: March 30 → April 10.","fr":"&quot;create versions&quot; → 5 versions créées. &quot;the project should be finished in 10 network days&quot; → Tout recompressé en sprints de 2 jours : 30 mars → 10 avril.","nl":"&quot;create versions&quot; → 5 versies aangemaakt. &quot;the project should be finished in 10 network days&quot; → Alles gecomprimeerd tot 2-daagse sprints: 30 maart → 10 april."}'>
+          "create versions" → 5 versions created. "the project should be finished in 10 network days" → All recompressed into 2-day sprints: March 30 → April 10.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">06</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Assign everything at once","fr":"Tout assigner en une fois","nl":"Alles in één keer toewijzen"}'>Assign everything at once</div>
+        <div class="phase-desc" data-t='{"en":"&quot;assign tasks to Jeanne, assign accountable Oumaima, set the category itself, set the version itself&quot; → All 7 work packages updated in one command.","fr":"&quot;assign tasks to Jeanne, assign accountable Oumaima, set the category itself, set the version itself&quot; → Les 7 work packages mis à jour en une seule commande.","nl":"&quot;assign tasks to Jeanne, assign accountable Oumaima, set the category itself, set the version itself&quot; → Alle 7 work packages bijgewerkt in één commando."}'>
+          "assign tasks to Jeanne, assign accountable Oumaima, set the category itself, set the version itself" → All 7 work packages updated in one command.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">07</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Add deployment tasks","fr":"Ajouter les tâches de déploiement","nl":"Deployment-taken toevoegen"}'>Add deployment tasks</div>
+        <div class="phase-desc" data-t='{"en":"&quot;add missing tasks to deploy the application on our staging environment&quot; → 7 deployment work packages created with sequential dependencies, detailed steps, and acceptance criteria.","fr":"&quot;add missing tasks to deploy the application on our staging environment&quot; → 7 work packages de déploiement créés avec des dépendances séquentielles, des étapes détaillées et des critères d&apos;acceptation.","nl":"&quot;add missing tasks to deploy the application on our staging environment&quot; → 7 deployment work packages aangemaakt met sequentiële afhankelijkheden, gedetailleerde stappen en acceptatiecriteria."}'>
+          "add missing tasks to deploy the application on our staging environment" → 7 deployment work packages created with sequential dependencies, detailed steps, and acceptance criteria.</div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">08</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Publish a news announcement","fr":"Publier une annonce","nl":"Nieuwsaankondiging publiceren"}'>Publish a news announcement</div>
+        <div class="phase-desc" data-t='{"en":"&quot;add a news&quot; → A full project kickoff announcement published to the OpenProject news feed — team, objectives, timeline, links — all generated from context.","fr":"&quot;add a news&quot; → Une annonce complète de lancement de projet publiée dans le fil d&apos;actualités OpenProject — équipe, objectifs, planning, liens — tout généré à partir du contexte.","nl":"&quot;add a news&quot; → Een volledige project-kickoffaankondiging gepubliceerd in de OpenProject nieuwsfeed — team, doelen, tijdlijn, links — alles gegenereerd vanuit context."}'>
+          "add a news" → A full project kickoff announcement published to the OpenProject news feed — team, objectives, timeline, links — all generated from context.</div>
       </div>
     </div>
   </div>
-</div>
-
-<!-- 5 · METRICS -->
-<div class="slide" id="s5">
-  <div class="prompt ai" data-t='{"en":"openclaw stats --benchmark","fr":"openclaw stats --benchmark"}'>openclaw stats --benchmark</div>
-  <div class="h-large ai" data-t='{"en":"By the <span class=\"accent\">numbers</span>","fr":"En <span class=\"accent\">chiffres</span>"}'>By the <span class="accent">numbers</span></div>
+  <div class="body-text ai" style="margin-top:12px"
+    data-t='{"en":"<span class=\"hl\">Total time: about 45 minutes of conversation.</span> What would this normally take? Conservatively, 4–5 hours of clicking, typing, correcting, browsing and context-switching between browser tabs, Excel, Word, <a href=\"https://draw.io\" target=\"_blank\">Draw.io</a>, Shared drives, Emails...","fr":"<span class=\"hl\">Temps total : environ 45 minutes de conversation.</span> Combien de temps cela prendrait-il normalement ? Au bas mot, 4 à 5 heures de clics, de saisie, de corrections, de navigation et de changements de contexte entre onglets, Excel, Word, <a href=\"https://draw.io\" target=\"_blank\">Draw.io</a>, drives partagés, Emails...","nl":"<span class=\"hl\">Totale tijd: ongeveer 45 minuten conversatie.</span> Hoeveel tijd zou dit normaal kosten? Conservatief geschat, 4–5 uur klikken, typen, corrigeren, browsen en context-switchen tussen browsertabs, Excel, Word, <a href=\"https://draw.io\" target=\"_blank\">Draw.io</a>, gedeelde drives, Emails..."}'>
+    <span class="hl">Total time: about 45 minutes of conversation.</span> What would this normally take? Conservatively, 4–5 hours of clicking, typing, correcting, browsing and context-switching between browser tabs, Excel, Word, <a href="https://draw.io" target="_blank">Draw.io</a>, Shared drives, Emails...</div>
   <div class="metrics-row ai">
     <div class="metric-card">
-      <div class="metric-num">&lt;30s</div>
-      <div class="metric-label" data-t='{"en":"Photo to Gantt","fr":"Photo vers Gantt"}'>Photo to Gantt</div>
+      <div class="metric-num">&lt;45min</div>
+      <div class="metric-label">OpenClaw</div>
     </div>
     <div class="metric-card">
-      <div class="metric-num">95%</div>
-      <div class="metric-label" data-t='{"en":"Task detection accuracy","fr":"Précision détection tâches"}'>Task detection accuracy</div>
+      <div class="metric-num" style="color:var(--amber)">4-5h</div>
+      <div class="metric-label" data-t='{"en":"Manual","fr":"Manuel","nl":"Handmatig"}'>Manual</div>
     </div>
     <div class="metric-card">
-      <div class="metric-num">0</div>
-      <div class="metric-label" data-t='{"en":"Lines of code required","fr":"Lignes de code requises"}'>Lines of code required</div>
-    </div>
-  </div>
-  <div class="metrics-row ai">
-    <div class="metric-card">
-      <div class="metric-num">3h→5min</div>
-      <div class="metric-label" data-t='{"en":"Manual entry eliminated","fr":"Saisie manuelle éliminée"}'>Manual entry eliminated</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-num">∞</div>
-      <div class="metric-label" data-t='{"en":"Whiteboards supported","fr":"Tableaux blancs supportés"}'>Whiteboards supported</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-num">3</div>
-      <div class="metric-label" data-t='{"en":"PM tools integrated","fr":"Outils PM intégrés"}'>PM tools integrated</div>
+      <div class="metric-num">14</div>
+      <div class="metric-label" data-t='{"en":"Work packages created","fr":"Work packages créés","nl":"Work packages aangemaakt"}'>Work packages created</div>
     </div>
   </div>
 </div>
 
-<!-- 6 · BEFORE / AFTER -->
-<div class="slide" id="s6">
-  <div class="prompt ai">diff --old-workflow --new-workflow</div>
-  <div class="h-large ai" data-t='{"en":"Before / <span class=\"accent\">After</span>","fr":"Avant / <span class=\"accent\">Après</span>"}'>Before / <span class="accent">After</span></div>
-  <div class="two-col ai">
-    <div class="col-card old">
-      <div class="col-title" data-t='{"en":"Before OpenClaw","fr":"Avant OpenClaw"}'>Before OpenClaw</div>
-      <div class="col-item" data-t='{"en":"Blurry phone photo of the whiteboard","fr":"Photo floue du tableau au téléphone"}'>Blurry phone photo of the whiteboard</div>
-      <div class="col-item" data-t='{"en":"Manual data entry into PM tool (2-3 hours)","fr":"Saisie manuelle dans l&apos;outil PM (2-3 heures)"}'>Manual data entry into PM tool (2-3 hours)</div>
-      <div class="col-item" data-t='{"en":"\"Wait, was that task before or after the MVP?\"","fr":"\"Attends, cette tâche était avant ou après le MVP ?\""}'>\"Wait, was that task before or after the MVP?\"</div>
-      <div class="col-item" data-t='{"en":"Dependencies lost in translation","fr":"Dépendances perdues dans la traduction"}'>Dependencies lost in translation</div>
-      <div class="col-item" data-t='{"en":"Gantt doesn&apos;t match what the team agreed on","fr":"Le Gantt ne correspond pas à ce que l&apos;équipe a décidé"}'>Gantt doesn't match what the team agreed on</div>
-    </div>
-    <div class="col-card good">
-      <div class="col-title" data-t='{"en":"With OpenClaw","fr":"Avec OpenClaw"}'>With OpenClaw</div>
-      <div class="col-item" data-t='{"en":"Snap → structured data in 30 seconds","fr":"Photo → données structurées en 30 secondes"}'>Snap → structured data in 30 seconds</div>
-      <div class="col-item" data-t='{"en":"Tasks auto-created in OpenProject/Jira","fr":"Tâches auto-créées dans OpenProject/Jira"}'>Tasks auto-created in OpenProject/Jira</div>
-      <div class="col-item" data-t='{"en":"Dependencies preserved exactly as drawn","fr":"Dépendances préservées exactement comme dessinées"}'>Dependencies preserved exactly as drawn</div>
-      <div class="col-item" data-t='{"en":"Owners assigned, milestones marked","fr":"Responsables assignés, jalons marqués"}'>Owners assigned, milestones marked</div>
-      <div class="col-item" data-t='{"en":"Team reviews Gantt in the same meeting","fr":"L&apos;équipe revoit le Gantt dans la même réunion"}'>Team reviews Gantt in the same meeting</div>
-    </div>
-  </div>
-</div>
-
-<!-- 7 · INTEGRATIONS -->
-<div class="slide" id="s7">
-  <div class="prompt ai">openclaw skills --list</div>
-  <div class="h-large ai" data-t='{"en":"Plugs into <span class=\"accent\">your stack</span>","fr":"S&apos;intègre à <span class=\"accent\">votre stack</span>"}'>Plugs into <span class="accent">your stack</span></div>
-  <div class="steps-grid ai">
-    <div class="step-card">
-      <div class="step-num">SKILL</div>
-      <div class="step-title">OpenProject</div>
-      <div class="step-stack">REST API v3</div>
-      <div class="step-desc" data-t='{"en":"Create work packages, set relations, assign members, update status — all via the OpenProject skill.","fr":"Créer des work packages, définir des relations, assigner des membres, mettre à jour le statut — via le skill OpenProject."}'>Create work packages, set relations, assign members, update status — all via the OpenProject skill.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">SKILL</div>
-      <div class="step-title">Jira</div>
-      <div class="step-stack">REST API v3</div>
-      <div class="step-desc" data-t='{"en":"Create issues, link dependencies, set sprints and story points. Full Jira Cloud integration.","fr":"Créer des issues, lier les dépendances, définir sprints et story points. Intégration complète Jira Cloud."}'>Create issues, link dependencies, set sprints and story points. Full Jira Cloud integration.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">EXPORT</div>
-      <div class="step-title">HTML / CSV</div>
-      <div class="step-stack" data-t='{"en":"Standalone","fr":"Autonome"}'>Standalone</div>
-      <div class="step-desc" data-t='{"en":"Generate a self-contained Gantt chart as HTML or export task data as CSV for any tool.","fr":"Générer un diagramme de Gantt HTML autonome ou exporter les données en CSV pour n&apos;importe quel outil."}'>Generate a self-contained Gantt chart as HTML or export task data as CSV for any tool.</div>
-    </div>
-  </div>
-</div>
-
-<!-- 8 · HOW IT WORKS UNDER THE HOOD -->
-<div class="slide" id="s8">
-  <div class="prompt ai">openclaw --explain architecture</div>
-  <div class="h-large ai" data-t='{"en":"Under the <span class=\"accent\">hood</span>","fr":"Sous le <span class=\"accent\">capot</span>"}'>Under the <span class="accent">hood</span></div>
+<!-- S8 · WHY THIS MATTERS -->
+<div class="slide scrollable" id="s8">
+  <div class="prompt ai">cat ~/learnings/why.md</div>
+  <div class="h-large ai"><span data-t='{"en":"Why This","fr":"Pourquoi c&apos;est","nl":"Waarom dit"}'>Why This</span> <span class="accent" data-t='{"en":"Matters","fr":"important","nl":"belangrijk is"}'>Matters</span></div>
   <div class="phases-full ai">
-    <div class="phase active-phase">
+    <div class="phase">
       <div class="phase-num">01</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Vision Analysis","fr":"Analyse Vision"}'>Vision Analysis</div>
-        <div class="phase-desc" data-t='{"en":"Claude&apos;s vision model reads the whiteboard image — handwriting, diagrams, spatial layout, colors, arrows. Everything.","fr":"Le modèle vision de Claude lit l&apos;image du tableau — écriture, diagrammes, disposition spatiale, couleurs, flèches. Tout."}'>Claude's vision model reads the whiteboard image — handwriting, diagrams, spatial layout, colors, arrows. Everything.</div>
+        <div class="phase-title" data-t='{"en":"Projects start properly","fr":"Les projets démarrent correctement","nl":"Projecten starten goed"}'>Projects start properly</div>
+        <div class="phase-desc" data-t='{"en":"The #1 killer of project management quality is incomplete setup. When creating a work package takes 2 minutes of clicking, people create vague one-liners with no description, no assignee, no version, no dependencies. When creating a work package takes 0 effort — because you describe it in natural language and the agent handles the rest — <strong>every work package gets a proper description, acceptance criteria, and metadata from day one.</strong>","fr":"Le tueur #1 de la qualité en gestion de projet est une mise en place incomplète. Quand créer un work package prend 2 minutes de clics, les gens créent des one-liners vagues sans description, sans assigné, sans version, sans dépendances. Quand créer un work package ne demande aucun effort — parce qu&apos;on le décrit en langage naturel et l&apos;agent fait le reste — <strong>chaque work package obtient une description correcte, des critères d&apos;acceptation et des métadonnées dès le premier jour.</strong>","nl":"De #1 killer van projectmanagementkwaliteit is onvolledige opzet. Wanneer het aanmaken van een work package 2 minuten klikken kost, maken mensen vage one-liners zonder beschrijving, geen toegewezene, geen versie, geen afhankelijkheden. Wanneer het aanmaken van een work package 0 inspanning kost — omdat je het beschrijft in natuurlijke taal en de agent de rest doet — <strong>krijgt elk work package een goede beschrijving, acceptatiecriteria en metadata vanaf dag één.</strong>"}'>
+          The #1 killer of project management quality is incomplete setup. When creating a work package takes 2 minutes of clicking, people create vague one-liners with no description, no assignee, no version, no dependencies. When creating a work package takes 0 effort — because you describe it in natural language and the agent handles the rest — <strong>every work package gets a proper description, acceptance criteria, and metadata from day one.</strong></div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">02</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Context Engineering","fr":"Context Engineering"}'>Context Engineering</div>
-        <div class="phase-desc" data-t='{"en":"OpenClaw skills provide the project management context: your team roster, existing project structure, naming conventions, tool constraints.","fr":"Les skills OpenClaw fournissent le contexte PM : liste d&apos;équipe, structure projet existante, conventions de nommage, contraintes outils."}'>OpenClaw skills provide the project management context: your team roster, existing project structure, naming conventions, tool constraints.</div>
+        <div class="phase-title" data-t='{"en":"Consistency at scale","fr":"Cohérence à grande échelle","nl":"Consistentie op schaal"}'>Consistency at scale</div>
+        <div class="phase-desc" data-t='{"en":"I manage multiple projects across OpenProject, Jira, HubSpot, and GitHub. The OpenClaw skill approach means I interact with all of them the same way: through conversation. The agent handles the API differences. Need to mirror a user&apos;s memberships across 14 projects? &quot;make Béatrice member of the same projects as Jeanne&quot; — Done. Seven new memberships created, all with matching roles. In one sentence.","fr":"Je gère plusieurs projets sur OpenProject, Jira, HubSpot et GitHub. L&apos;approche par skills OpenClaw signifie que j&apos;interagis avec tous de la même manière : par la conversation. L&apos;agent gère les différences d&apos;API. Besoin de dupliquer les adhésions d&apos;un utilisateur sur 14 projets ? &quot;make Béatrice member of the same projects as Jeanne&quot; — Fait. Sept nouvelles adhésions créées, toutes avec les mêmes rôles. En une phrase.","nl":"Ik beheer meerdere projecten over OpenProject, Jira, HubSpot en GitHub. De OpenClaw skill-aanpak betekent dat ik met allemaal op dezelfde manier communiceer: via conversatie. De agent handelt de API-verschillen af. Wil je de lidmaatschappen van een gebruiker spiegelen over 14 projecten? &quot;make Béatrice member of the same projects as Jeanne&quot; — Klaar. Zeven nieuwe lidmaatschappen aangemaakt, allemaal met overeenkomende rollen. In één zin."}'>
+          I manage multiple projects across OpenProject, Jira, HubSpot, and GitHub. The OpenClaw skill approach means I interact with all of them the same way: through conversation. The agent handles the API differences. Need to mirror a user's memberships across 14 projects? "make Béatrice member of the same projects as Jeanne" — Done. Seven new memberships created, all with matching roles. In one sentence.</div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">03</div>
       <div>
-        <div class="phase-title" data-t='{"en":"Structured Extraction","fr":"Extraction Structurée"}'>Structured Extraction</div>
-        <div class="phase-desc" data-t='{"en":"Tasks, dependencies, milestones, owners extracted into a clean JSON structure. Human reviews before push.","fr":"Tâches, dépendances, jalons, responsables extraits en JSON propre. L&apos;humain valide avant le push."}'>Tasks, dependencies, milestones, owners extracted into a clean JSON structure. Human reviews before push.</div>
+        <div class="phase-title" data-t='{"en":"Documentation happens automatically","fr":"La documentation se fait automatiquement","nl":"Documentatie gebeurt automatisch"}'>Documentation happens automatically</div>
+        <div class="phase-desc" data-t='{"en":"Every work package I create through OpenClaw and my Skills gets: A structured description, Steps and acceptance criteria, Links to relevant resources (SharePoint, GitLab, docs), Proper categorization and versioning. Not because I&apos;m disciplined. Because the agent does it by default. I master the theory and learned from the best. Now the machine enforces what I always meant to do.","fr":"Chaque work package que je crée via OpenClaw et mes Skills reçoit : une description structurée, des étapes et critères d&apos;acceptation, des liens vers les ressources pertinentes (SharePoint, GitLab, docs), une catégorisation et un versioning appropriés. Pas parce que je suis discipliné. Parce que l&apos;agent le fait par défaut. Je maîtrise la théorie et j&apos;ai appris des meilleurs. Maintenant la machine applique ce que j&apos;ai toujours voulu faire.","nl":"Elk work package dat ik aanmaak via OpenClaw en mijn Skills krijgt: een gestructureerde beschrijving, stappen en acceptatiecriteria, links naar relevante bronnen (SharePoint, GitLab, docs), juiste categorisering en versiebeheer. Niet omdat ik gedisciplineerd ben. Omdat de agent het standaard doet. Ik beheers de theorie en heb geleerd van de besten. Nu dwingt de machine af wat ik altijd wilde doen."}'>
+          Every work package I create through OpenClaw and my Skills gets: A structured description, Steps and acceptance criteria, Links to relevant resources (SharePoint, GitLab, docs), Proper categorization and versioning. Not because I'm disciplined. Because the agent does it by default. I master the theory and learned from the best. Now the machine enforces what I always meant to do.</div>
       </div>
     </div>
     <div class="phase">
       <div class="phase-num">04</div>
       <div>
-        <div class="phase-title" data-t='{"en":"API Push","fr":"Push API"}'>API Push</div>
-        <div class="phase-desc" data-t='{"en":"One command pushes everything to OpenProject/Jira: creates tasks, sets relations, assigns people, marks milestones.","fr":"Une commande pousse tout vers OpenProject/Jira : crée les tâches, définit les relations, assigne les personnes, marque les jalons."}'>One command pushes everything to OpenProject/Jira: creates tasks, sets relations, assigns people, marks milestones.</div>
+        <div class="phase-title" data-t='{"en":"Discord becomes the control plane","fr":"Discord devient le plan de contrôle","nl":"Discord wordt het controlepaneel"}'>Discord becomes the control plane</div>
+        <div class="phase-desc" data-t='{"en":"My #bot-openproject Discord channel is now an operations console. I can: Create and manage projects, Query work package status, Generate reports and export them as files, Add members, set roles, configure versions — All without opening a browser. This matters for speed, but it matters even more for <strong>continuity</strong>. Every command and its result is visible in the chat history. It&apos;s a natural audit trail.","fr":"Mon canal Discord #bot-openproject est maintenant une console d&apos;opérations. Je peux : Créer et gérer des projets, Interroger le statut des work packages, Générer des rapports et les exporter en fichiers, Ajouter des membres, définir des rôles, configurer des versions — Le tout sans ouvrir un navigateur. C&apos;est important pour la vitesse, mais encore plus pour la <strong>continuité</strong>. Chaque commande et son résultat est visible dans l&apos;historique du chat. C&apos;est une piste d&apos;audit naturelle.","nl":"Mijn #bot-openproject Discord-kanaal is nu een operatieconsole. Ik kan: Projecten aanmaken en beheren, Work package status opvragen, Rapporten genereren en exporteren als bestanden, Leden toevoegen, rollen instellen, versies configureren — Alles zonder een browser te openen. Dit is belangrijk voor snelheid, maar nog belangrijker voor <strong>continuïteit</strong>. Elk commando en het resultaat is zichtbaar in de chatgeschiedenis. Het is een natuurlijke audit trail."}'>
+          My #bot-openproject Discord channel is now an operations console. I can: Create and manage projects, Query work package status, Generate reports and export them as files, Add members, set roles, configure versions — All without opening a browser. This matters for speed, but it matters even more for <strong>continuity</strong>. Every command and its result is visible in the chat history. It's a natural audit trail.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 9 · USE CASES -->
-<div class="slide" id="s9">
-  <div class="prompt ai">ls ~/use-cases/</div>
-  <div class="h-large ai" data-t='{"en":"Who is this <span class=\"accent\">for</span>","fr":"Pour <span class=\"accent\">qui</span>"}'>Who is this <span class="accent">for</span></div>
-  <div class="questions-list ai">
-    <div class="question-item">
-      <div class="q-mark">→</div>
-      <div data-t='{"en":"<strong>Sprint planning</strong> — photograph the board at standup, Gantt is ready before lunch","fr":"<strong>Sprint planning</strong> — photographiez le board au standup, le Gantt est prêt avant midi"}'>
-        <strong>Sprint planning</strong> — photograph the board at standup, Gantt is ready before lunch</div>
+<!-- S9 · THE JIRA SKILL -->
+<div class="slide scrollable" id="s9">
+  <div class="prompt ai">openclaw skills --describe jira</div>
+  <div class="h-large ai"><span data-t='{"en":"The Jira Skill:","fr":"Le Skill Jira :","nl":"De Jira Skill:"}'>The Jira Skill:</span><br><span class="accent" style="font-size:.7em" data-t='{"en":"Same Philosophy, Different Beast","fr":"Même philosophie, animal différent","nl":"Zelfde filosofie, ander beest"}'>Same Philosophy, Different Beast</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"OpenProject is one side of my project management stack. But I also use <strong>Atlassian Jira</strong>. So I built a second skill: <a href=\"https://github.com/ALT-F1-OpenClaw/openclaw-skill-atlassian-jira-by-altf1be\" target=\"_blank\">atlassian-jira-by-altf1be</a>. Same architecture. Same design principles. Different API.","fr":"OpenProject est un côté de ma stack de gestion de projet. Mais j&apos;utilise aussi <strong>Atlassian Jira</strong>. Donc j&apos;ai construit un second skill : <a href=\"https://github.com/ALT-F1-OpenClaw/openclaw-skill-atlassian-jira-by-altf1be\" target=\"_blank\">atlassian-jira-by-altf1be</a>. Même architecture. Mêmes principes de conception. API différente.","nl":"OpenProject is één kant van mijn projectmanagement-stack. Maar ik gebruik ook <strong>Atlassian Jira</strong>. Dus bouwde ik een tweede skill: <a href=\"https://github.com/ALT-F1-OpenClaw/openclaw-skill-atlassian-jira-by-altf1be\" target=\"_blank\">atlassian-jira-by-altf1be</a>. Zelfde architectuur. Zelfde designprincipes. Andere API."}'>
+    OpenProject is one side of my project management stack. But I also use <strong>Atlassian Jira</strong>. So I built a second skill: <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-atlassian-jira-by-altf1be" target="_blank">atlassian-jira-by-altf1be</a>. Same architecture. Same design principles. Different API.</div>
+  <div class="terminal ai" style="max-width:820px">
+    <div class="t-head"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+    <div class="t-body">
+      <div class="t-line"><span class="t-cmd">$</span><span style="color:#ccc"> openclaw "move PROJ-42 to Done"</span></div>
+      <span class="t-out">● Transitioning PROJ-42... <span class="t-acc">✓ Done</span></span>
+      <span class="t-comment" data-t='{"en":"# No browser. No board. No drag-and-drop.","fr":"# Pas de navigateur. Pas de board. Pas de glisser-déposer.","nl":"# Geen browser. Geen board. Geen drag-and-drop."}'># No browser. No board. No drag-and-drop.</span>
+      <div class="t-line" style="margin-top:8px"><span class="t-cmd">$</span><span style="color:#ccc"> "find all open bugs assigned to me in PROJ, ordered by priority"</span></div>
+      <span class="t-out">→ <span class="t-hi">project = PROJ AND status != Done AND type = Bug</span></span>
+      <span class="t-out"><span class="t-hi">  AND assignee = currentUser() ORDER BY priority DESC</span></span>
     </div>
-    <div class="question-item">
-      <div class="q-mark">→</div>
-      <div data-t='{"en":"<strong>Workshop facilitation</strong> — capture every breakout group&apos;s board, merge into one project plan","fr":"<strong>Facilitation d&apos;ateliers</strong> — capturez le tableau de chaque groupe, fusionnez en un seul plan projet"}'>
-        <strong>Workshop facilitation</strong> — capture every breakout group's board, merge into one project plan</div>
+  </div>
+  <div class="body-text ai" style="margin-top:12px"
+    data-t='{"en":"<span class=\"hl\">Why Two Skills Instead of One?</span> OpenProject and Jira are fundamentally different systems. Different APIs, different data models, different workflow engines. The agent layer (OpenClaw) provides the unified interface.<br><br>#bot-openproject → OpenProject skill<br>#bot-jira → Jira skill<br><br>Same human. Same language. Different backends.","fr":"<span class=\"hl\">Pourquoi deux Skills au lieu d&apos;un ?</span> OpenProject et Jira sont des systèmes fondamentalement différents. APIs différentes, modèles de données différents, moteurs de workflow différents. La couche agent (OpenClaw) fournit l&apos;interface unifiée.<br><br>#bot-openproject → Skill OpenProject<br>#bot-jira → Skill Jira<br><br>Même humain. Même langage. Backends différents.","nl":"<span class=\"hl\">Waarom twee Skills in plaats van één?</span> OpenProject en Jira zijn fundamenteel verschillende systemen. Verschillende API&apos;s, verschillende datamodellen, verschillende workflow-engines. De agentlaag (OpenClaw) biedt de uniforme interface.<br><br>#bot-openproject → OpenProject skill<br>#bot-jira → Jira skill<br><br>Zelfde mens. Zelfde taal. Andere backends."}'>
+    <span class="hl">Why Two Skills Instead of One?</span> OpenProject and Jira are fundamentally different systems. Different APIs, different data models, different workflow engines. The agent layer (OpenClaw) provides the unified interface.<br><br>#bot-openproject → OpenProject skill<br>#bot-jira → Jira skill<br><br>Same human. Same language. Different backends.</div>
+</div>
+
+<!-- S10 · SKILL ECOSYSTEM -->
+<div class="slide scrollable" id="s10">
+  <div class="prompt ai">clawhub search --all</div>
+  <div class="h-large ai"><span data-t='{"en":"The Skill","fr":"L&apos;écosystème","nl":"Het Skill"}'>The Skill</span> <span class="accent" data-t='{"en":"Ecosystem","fr":"de Skills","nl":"Ecosysteem"}'>Ecosystem</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"The OpenProject skill is one of many. OpenClaw&apos;s <a href=\"https://clawhub.ai\" target=\"_blank\">ClawHub</a> hosts skills for:","fr":"Le skill OpenProject est un parmi d&apos;autres. Le <a href=\"https://clawhub.ai\" target=\"_blank\">ClawHub</a> d&apos;OpenClaw héberge des skills pour :","nl":"De OpenProject skill is één van velen. OpenClaw&apos;s <a href=\"https://clawhub.ai\" target=\"_blank\">ClawHub</a> host skills voor:"}'>
+    The OpenProject skill is one of many. OpenClaw's <a href="https://clawhub.ai" target="_blank">ClawHub</a> hosts skills for:</div>
+  <div class="steps-grid ai">
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">Jira</div><div class="step-desc" data-t='{"en":"Full CRUD, workflow transitions, JQL search","fr":"CRUD complet, transitions de workflow, recherche JQL","nl":"Volledige CRUD, workflow-transities, JQL-zoekopdrachten"}'>Full CRUD, workflow transitions, JQL search</div></div>
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">HubSpot</div><div class="step-desc" data-t='{"en":"CRM, CMS, marketing, automation","fr":"CRM, CMS, marketing, automatisation","nl":"CRM, CMS, marketing, automatisering"}'>CRM, CMS, marketing, automation</div></div>
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">GitHub</div><div class="step-desc" data-t='{"en":"Issues, PRs, CI/CD, code review","fr":"Issues, PRs, CI/CD, revue de code","nl":"Issues, PRs, CI/CD, code review"}'>Issues, PRs, CI/CD, code review</div></div>
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">SharePoint</div><div class="step-desc" data-t='{"en":"Documents, Todos","fr":"Documents, Todos","nl":"Documenten, Todos"}'>Documents, Todos</div></div>
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">Google Workspace</div><div class="step-desc" data-t='{"en":"Gmail, Calendar, Drive, Sheets","fr":"Gmail, Agenda, Drive, Sheets","nl":"Gmail, Agenda, Drive, Sheets"}'>Gmail, Calendar, Drive, Sheets</div></div>
+    <div class="step-card"><div class="step-num">SKILL</div><div class="step-title">Notion</div><div class="step-desc" data-t='{"en":"Pages, databases, blocks","fr":"Pages, bases de données, blocks","nl":"Pagina&apos;s, databases, blokken"}'>Pages, databases, blocks</div></div>
+  </div>
+  <div class="body-text ai" style="margin-top:12px"
+    data-t='{"en":"Each skill follows the same pattern: a CLI tool that the agent knows how to use, backed by API calls with proper auth, rate limiting, and error handling. You can also <span class=\"hl\">build your own skills</span>.","fr":"Chaque skill suit le même modèle : un outil CLI que l&apos;agent sait utiliser, soutenu par des appels API avec authentification, limitation de débit et gestion d&apos;erreurs. Vous pouvez aussi <span class=\"hl\">construire vos propres skills</span>.","nl":"Elke skill volgt hetzelfde patroon: een CLI-tool die de agent kan gebruiken, ondersteund door API-aanroepen met juiste authenticatie, rate limiting en foutafhandeling. Je kunt ook <span class=\"hl\">je eigen skills bouwen</span>."}'>
+    Each skill follows the same pattern: a CLI tool that the agent knows how to use, backed by API calls with proper auth, rate limiting, and error handling. You can also <span class="hl">build your own skills</span>.</div>
+</div>
+
+<!-- S11 · WHAT I LEARNED -->
+<div class="slide scrollable" id="s11">
+  <div class="prompt ai">cat ~/learnings/conclusions.md</div>
+  <div class="h-large ai"><span data-t='{"en":"What I","fr":"Ce que j&apos;ai","nl":"Wat ik heb"}'>What I</span> <span class="accent" data-t='{"en":"Learned","fr":"appris","nl":"geleerd"}'>Learned</span></div>
+  <div class="phases-full ai">
+    <div class="phase">
+      <div class="phase-num">01</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"AI never ever replace project managers. It removes the friction.","fr":"L&apos;IA ne remplace jamais les chefs de projet. Elle supprime la friction.","nl":"AI vervangt nooit projectmanagers. Het verwijdert de wrijving."}'>AI never ever replace project managers. It removes the friction.</div>
+        <div class="phase-desc" data-t='{"en":"The decisions are still mine: what to build, who to assign, how to prioritize. But the execution of those decisions — the clicking, the typing, the formatting, the linking — that&apos;s gone.","fr":"Les décisions sont toujours les miennes : quoi construire, à qui assigner, comment prioriser. Mais l&apos;exécution de ces décisions — les clics, la saisie, la mise en forme, les liens — c&apos;est fini.","nl":"De beslissingen zijn nog steeds van mij: wat bouwen, aan wie toewijzen, hoe prioriteren. Maar de uitvoering van die beslissingen — het klikken, het typen, het formatteren, het linken — dat is weg."}'>
+          The decisions are still mine: what to build, who to assign, how to prioritize. But the execution of those decisions — the clicking, the typing, the formatting, the linking — that's gone.</div>
+      </div>
     </div>
-    <div class="question-item">
-      <div class="q-mark">→</div>
-      <div data-t='{"en":"<strong>Client kickoffs</strong> — whiteboard with the client, send them a structured timeline before they leave the room","fr":"<strong>Kickoffs client</strong> — tableau blanc avec le client, envoyez-leur un planning structuré avant qu&apos;ils quittent la salle"}'>
-        <strong>Client kickoffs</strong> — whiteboard with the client, send them a structured timeline before they leave the room</div>
+    <div class="phase">
+      <div class="phase-num">02</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Natural language is the best API client.","fr":"Le langage naturel est le meilleur client API.","nl":"Natuurlijke taal is de beste API-client."}'>Natural language is the best API client.</div>
+        <div class="phase-desc" data-t='{"en":"I don&apos;t need to remember Command lines flags or API endpoints like we did or do when we use the command prompts. I say what I want, and the agent figures out the how. Even the LLMs make mistakes !!! When something fails (wrong project, missing member), it tells me why and I fix it.","fr":"Je n&apos;ai pas besoin de me souvenir des flags de ligne de commande ou des endpoints API comme on le faisait ou le fait quand on utilise l&apos;invite de commandes. Je dis ce que je veux, et l&apos;agent trouve le comment. Même les LLMs font des erreurs !!! Quand quelque chose échoue (mauvais projet, membre manquant), il me dit pourquoi et je corrige.","nl":"Ik hoef geen Command line flags of API-eindpunten te onthouden zoals we deden of doen wanneer we de opdrachtprompt gebruiken. Ik zeg wat ik wil, en de agent zoekt uit hoe. Zelfs de LLM&apos;s maken fouten !!! Wanneer iets mislukt (verkeerd project, ontbrekend lid), vertelt het me waarom en ik los het op."}'>
+          I don't need to remember Command lines flags or API endpoints like we did or do when we use the command prompts. I say what I want, and the agent figures out the how. Even the LLMs make mistakes !!! When something fails (wrong project, missing member), it tells me why and I fix it.</div>
+      </div>
     </div>
-    <div class="question-item">
-      <div class="q-mark">→</div>
-      <div data-t='{"en":"<strong>Retrospectives</strong> — action items from the retro board go straight into the backlog","fr":"<strong>Rétrospectives</strong> — les actions du board retro vont directement dans le backlog"}'>
-        <strong>Retrospectives</strong> — action items from the retro board go straight into the backlog</div>
+    <div class="phase">
+      <div class="phase-num">03</div>
+      <div>
+        <div class="phase-title" data-t='{"en":"Quality scales when effort drops to zero.","fr":"La qualité monte en flèche quand l&apos;effort tombe à zéro.","nl":"Kwaliteit schaalt wanneer inspanning naar nul daalt."}'>Quality scales when effort drops to zero.</div>
+        <div class="phase-desc" data-t='{"en":"When adding a description costs nothing, every task gets one. When setting dependencies is free, every chain gets linked. The quality of project setup went up dramatically — not because I got better at it, but because the cost of doing it right became negligible.","fr":"Quand ajouter une description ne coûte rien, chaque tâche en obtient une. Quand définir des dépendances est gratuit, chaque chaîne est liée. La qualité de la mise en place des projets a augmenté dramatiquement — pas parce que je suis devenu meilleur, mais parce que le coût de bien faire est devenu négligeable.","nl":"Wanneer het toevoegen van een beschrijving niets kost, krijgt elke taak er een. Wanneer het instellen van afhankelijkheden gratis is, wordt elke keten gekoppeld. De kwaliteit van projectopzet ging dramatisch omhoog — niet omdat ik er beter in werd, maar omdat de kosten om het goed te doen verwaarloosbaar werden."}'>
+          When adding a description costs nothing, every task gets one. When setting dependencies is free, every chain gets linked. The quality of project setup went up dramatically — not because I got better at it, but because the cost of doing it right became negligible.</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- 10 · CTA -->
-<div class="slide" id="s10">
-  <div class="prompt ai">cat NEXT_STEPS.md</div>
-  <div class="h-large ai" data-t='{"en":"Get <span class=\"accent\">started</span>","fr":"<span class=\"accent\">Commencer</span>"}'>Get <span class="accent">started</span></div>
-  <div class="sep ai"></div>
-  <div class="cta-box ai" data-label="OPEN SOURCE">
-    <div class="cta-text" data-t='{"en":"OpenClaw is open source. The whiteboard-to-gantt workflow uses <strong>vision + skills</strong> that are already available.<br>Install OpenClaw, configure your PM tool skill, and snap your first whiteboard.","fr":"OpenClaw est open source. Le workflow whiteboard-to-gantt utilise <strong>vision + skills</strong> déjà disponibles.<br>Installez OpenClaw, configurez votre skill PM, et photographiez votre premier tableau."}'>
-      OpenClaw is open source. The whiteboard-to-gantt workflow uses <strong>vision + skills</strong> that are already available.<br>Install OpenClaw, configure your PM tool skill, and snap your first whiteboard.</div>
-    <div class="cta-contact">
-      <div>→ <a href="https://github.com/openclaw/openclaw" target="_blank">github.com/openclaw/openclaw</a></div>
-      <div>→ <a href="https://docs.openclaw.ai" target="_blank">docs.openclaw.ai</a></div>
-      <div>→ <a href="https://discord.com/invite/clawd" target="_blank">discord.com/invite/clawd</a></div>
+<!-- S12 · ALT-F1 AI PIPELINES -->
+<div class="slide" id="s12">
+  <div class="prompt ai">cat ~/company/pitch.md</div>
+  <div class="h-large ai"><span data-t='{"en":"We Help Companies","fr":"Nous aidons les entreprises à","nl":"Wij helpen bedrijven"}'>We Help Companies</span><br><span class="accent" data-t='{"en":"Build AI Pipelines","fr":"construire des pipelines IA","nl":"AI Pipelines bouwen"}'>Build AI Pipelines</span></div>
+  <div class="body-text ai"
+    data-t='{"en":"We help companies set up AI pipelines that create life-changing experiences — from whiteboard vision to structured project delivery, fully integrated into your existing tools.","fr":"Nous aidons les entreprises à mettre en place des pipelines IA qui créent des expériences transformatrices — de la vision du tableau blanc à la livraison de projet structurée, entièrement intégrés à vos outils existants.","nl":"Wij helpen bedrijven AI-pipelines op te zetten die levensveranderende ervaringen creëren — van whiteboard-visie tot gestructureerde projectoplevering, volledig geïntegreerd in uw bestaande tools."}'>
+    We help companies set up AI pipelines that create life-changing experiences — from whiteboard vision to structured project delivery, fully integrated into your existing tools.</div>
+  <div class="two-col ai">
+    <div class="col-card good">
+      <div class="col-title" data-t='{"en":"🔒 Private","fr":"🔒 Privé","nl":"🔒 Privaat"}'>🔒 Private</div>
+      <div class="col-item" data-t='{"en":"No internet, no cloud, no external APIs. Your data stays on your infrastructure. Period.","fr":"Pas d&apos;internet, pas de cloud, pas d&apos;APIs externes. Vos données restent sur votre infrastructure. Point.","nl":"Geen internet, geen cloud, geen externe API&apos;s. Uw data blijft op uw infrastructuur. Punt."}'>No internet, no cloud, no external APIs. Your data stays on your infrastructure. Period.</div>
     </div>
+    <div class="col-card old">
+      <div class="col-title" data-t='{"en":"🌐 Public","fr":"🌐 Public","nl":"🌐 Publiek"}'>🌐 Public</div>
+      <div class="col-item" data-t='{"en":"Leveraging cloud services: Remote drives, Mistral, Claude, Gemini, DeepSeek, Llama, and public APIs.","fr":"En exploitant les services cloud : drives distants, Mistral, Claude, Gemini, DeepSeek, Llama et les APIs publiques.","nl":"Gebruikmakend van clouddiensten: externe drives, Mistral, Claude, Gemini, DeepSeek, Llama en publieke API&apos;s."}'>Leveraging cloud services: Remote drives, Mistral, Claude, Gemini, DeepSeek, Llama, and public APIs.</div>
+    </div>
+  </div>
+  <div class="body-text ai" style="margin-top:14px;text-align:center;width:100%"
+    data-t='{"en":"<span class=\"hl\">Choose your posture. We build both.</span>","fr":"<span class=\"hl\">Choisissez votre posture. Nous construisons les deux.</span>","nl":"<span class=\"hl\">Kies uw houding. Wij bouwen beide.</span>"}'>
+    <span class="hl">Choose your posture. We build both.</span></div>
+</div>
+
+<!-- S13 · LINKS + SKILLS + BIO -->
+<div class="slide scrollable" id="s13">
+  <div class="prompt ai">cat ~/links.md</div>
+  <div class="h-large ai"><span data-t='{"en":"Get","fr":"Pour","nl":"Aan de"}'>Get</span> <span class="accent" data-t='{"en":"started","fr":"commencer","nl":"slag"}'>started</span></div>
+  <div class="cta-box ai" data-label="OPEN SOURCE">
+    <div class="cta-contact">
+      <div>→ <strong>OpenClaw</strong>: <a href="https://openclaw.ai" target="_blank">openclaw.ai</a> — open-source, self-hosted</div>
+      <div>→ <strong>Skills</strong>: <a href="https://clawhub.ai" target="_blank">clawhub.ai</a> — browse and install</div>
+      <div>→ <strong>Community</strong>: <a href="https://discord.com/invite/clawd" target="_blank">Discord</a> — OpenClaw Discord server</div>
+      <div>→ <strong>Source</strong>: <a href="https://github.com/openclaw/openclaw" target="_blank">GitHub</a> — OpenClaw source code</div>
+    </div>
+  </div>
+  <div class="ai" style="margin-top:16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);font-weight:700"
+    data-t='{"en":"ALT-F1 Skills available on GitHub","fr":"Skills ALT-F1 disponibles sur GitHub","nl":"ALT-F1 Skills beschikbaar op GitHub"}'>ALT-F1 Skills available on GitHub</div>
+  <div class="skills-list ai">
+    <div class="skill-row"><strong>SharePoint</strong> — file ops &amp; Office document intelligence <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-sharepoint" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>X/Twitter</strong> — tweets, threads, media via X API v2 <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-x-twitter" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>M365 Task Manager</strong> — To Do &amp; Planner <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-m365-task-manager" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>Jira Cloud</strong> — issues, comments, attachments, workflows, JQL <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-atlassian-jira-by-altf1be" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>OpenProject</strong> — work packages, projects, time entries, comments <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-openproject" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>HubSpot</strong> — CRM, CMS, Marketing, Conversations, Automation <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-hubspot-by-altf1be" target="_blank">↗ repo</a></div>
+    <div class="skill-row"><strong>Skill Template</strong> — template for creating new OpenClaw skills <a href="https://github.com/ALT-F1-OpenClaw/openclaw-skill-template" target="_blank">↗ repo</a></div>
+  </div>
+  <div class="bio ai">
+    <span data-t='{"en":"<em>Abdelkrim Boujraf is the founder of <a href=\"https://www.alt-f1.be\" target=\"_blank\">ALT-F1 SRL</a> and Partner at <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowData</a>, based in Brussels &amp; Tunisia.</em><br><br>Abdelkrim <strong>supports your industry with SOFTWARE, DATA, ANALYTICS &amp; LEAN OPTIMISATIONS. He also yells at his AI agent in Discord.</strong><br><br><strong>Cloud, On-Premise, Digital Transformation, Digital Workplace, AI &amp; Apps</strong><br><br><strong>If you manage projects and you&apos;re tired of the gap between &quot;knowing what to do&quot; and &quot;actually configuring it in the tool&quot; — this is worth trying.</strong>","fr":"<em>Abdelkrim Boujraf est le fondateur d&apos;<a href=\"https://www.alt-f1.be\" target=\"_blank\">ALT-F1 SRL</a> et Partenaire chez <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowData</a>, basé à Bruxelles &amp; en Tunisie.</em><br><br>Abdelkrim <strong>accompagne votre industrie avec SOFTWARE, DATA, ANALYTICS &amp; LEAN OPTIMISATIONS. Il crie aussi sur son agent IA dans Discord.</strong><br><br><strong>Cloud, On-Premise, Transformation Digitale, Digital Workplace, IA &amp; Apps</strong><br><br><strong>Si vous gérez des projets et que vous en avez marre du fossé entre &quot;savoir quoi faire&quot; et &quot;le configurer dans l&apos;outil&quot; — ça vaut le coup d&apos;essayer.</strong>","nl":"<em>Abdelkrim Boujraf is de oprichter van <a href=\"https://www.alt-f1.be\" target=\"_blank\">ALT-F1 SRL</a> en Partner bij <a href=\"https://www.xflowdata.com\" target=\"_blank\">XFlowData</a>, gevestigd in Brussel &amp; Tunesië.</em><br><br>Abdelkrim <strong>ondersteunt uw industrie met SOFTWARE, DATA, ANALYTICS &amp; LEAN OPTIMALISATIES. Hij schreeuwt ook tegen zijn AI-agent in Discord.</strong><br><br><strong>Cloud, On-Premise, Digitale Transformatie, Digitale Werkplek, AI &amp; Apps</strong><br><br><strong>Als u projecten beheert en moe bent van de kloof tussen &quot;weten wat te doen&quot; en &quot;het daadwerkelijk configureren in de tool&quot; — dit is het proberen waard.</strong>"}'>
+      <em>Abdelkrim Boujraf is the founder of <a href="https://www.alt-f1.be" target="_blank">ALT-F1 SRL</a> and Partner at <a href="https://www.xflowdata.com" target="_blank">XFlowData</a>, based in Brussels &amp; Tunisia.</em><br><br>Abdelkrim <strong>supports your industry with SOFTWARE, DATA, ANALYTICS &amp; LEAN OPTIMISATIONS. He also yells at his AI agent in Discord.</strong><br><br><strong>Cloud, On-Premise, Digital Transformation, Digital Workplace, AI &amp; Apps</strong><br><br><strong>If you manage projects and you're tired of the gap between "knowing what to do" and "actually configuring it in the tool" — this is worth trying.</strong></span>
   </div>
 </div>
 
 </div><!-- /presentation -->
 
 <div id="progress-bar" style="width:0%"></div>
-<div id="slide-counter"><em>1</em> / 11</div>
+<div id="slide-counter"><em>1</em> / 14</div>
 <div id="nav-hint">
   <span class="key" onclick="go(-1)">←</span>
   <span class="key" onclick="go(1)">→</span>
@@ -532,9 +600,10 @@ body.dark .metric-card::before{box-shadow:0 0 8px var(--green);}
 </div>
 
 <script>
-// ── Slide engine ──
 const slides=document.querySelectorAll('.slide');
 let cur=0,total=slides.length,lang='en',touchX=0;
+const langs=['en','fr','nl'];
+const langLabels={en:'🌐 FR',fr:'🌐 NL',nl:'🌐 EN'};
 
 function show(n){
   if(n<0||n>=total)return;
@@ -547,7 +616,6 @@ function show(n){
 }
 function go(d){show(cur+d);}
 
-// Keyboard
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key===' ')go(1);
   else if(e.key==='ArrowLeft')go(-1);
@@ -558,67 +626,59 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// Touch
 document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX;},{passive:true});
 document.addEventListener('touchend',e=>{
   const dx=e.changedTouches[0].screenX-touchX;
   if(Math.abs(dx)>50){dx<0?go(1):go(-1);}
 },{passive:true});
 
-// Click navigation (left/right halves)
 document.getElementById('presentation').addEventListener('click',e=>{
-  if(e.target.closest('a,button,.tb-btn,.key,.sm-item,.flow-box,.phase,.step-card'))return;
+  if(e.target.closest('a,button,.tb-btn,.key,.sm-item,.step-card,.phase,.col-card,.skill-row'))return;
   e.clientX>window.innerWidth/2?go(1):go(-1);
 });
 
-// Fullscreen
 function toggleFS(){
   if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
   else document.exitFullscreen();
 }
 
-// ── Theme toggle ──
 const themeBtn=document.getElementById('theme-btn');
 function setTheme(t){
   document.body.className=t;
   themeBtn.textContent=t==='dark'?'◐ Light':'◐ Dark';
-  localStorage.setItem('theme',t);
+  localStorage.setItem('wtg-theme',t);
 }
 themeBtn.onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');
-if(localStorage.getItem('theme'))setTheme(localStorage.getItem('theme'));
+if(localStorage.getItem('wtg-theme'))setTheme(localStorage.getItem('wtg-theme'));
 
-// ── i18n ──
 const langBtn=document.getElementById('lang-btn');
 function setLang(l){
   lang=l;
-  langBtn.textContent=l==='en'?'🌐 FR':'🌐 EN';
+  langBtn.textContent=langLabels[l];
   document.querySelectorAll('[data-t]').forEach(el=>{
-    try{
-      const t=JSON.parse(el.getAttribute('data-t'));
-      if(t[l])el.innerHTML=t[l];
-    }catch(e){}
+    try{const t=JSON.parse(el.getAttribute('data-t'));if(t[l])el.innerHTML=t[l];}catch(e){}
   });
-  // Glitch text update
   document.querySelectorAll('.glitch[data-tg]').forEach(el=>{
-    try{
-      const t=JSON.parse(el.getAttribute('data-tg'));
-      if(t[l])el.setAttribute('data-text',t[l]);
-    }catch(e){}
+    try{const t=JSON.parse(el.getAttribute('data-tg'));if(t[l])el.setAttribute('data-text',t[l]);}catch(e){}
   });
-  localStorage.setItem('lang',l);
+  localStorage.setItem('wtg-lang',l);
 }
-langBtn.onclick=()=>setLang(lang==='en'?'fr':'en');
-if(localStorage.getItem('lang'))setLang(localStorage.getItem('lang'));
+langBtn.onclick=()=>{
+  const i=(langs.indexOf(lang)+1)%langs.length;
+  setLang(langs[i]);
+};
+if(localStorage.getItem('wtg-lang'))setLang(localStorage.getItem('wtg-lang'));
 
-// ── Slide menu ──
 const menuTitles={
-  en:['Title','The Problem','The Pipeline','Live Demo','What It Sees','By the Numbers','Before / After','Integrations','Under the Hood','Use Cases','Get Started'],
-  fr:['Titre','Le Problème','Le Pipeline','Démo Live','Ce Qu\'il Voit','En Chiffres','Avant / Après','Intégrations','Sous le Capot','Cas d\'Usage','Commencer']
+  en:['Title','The Problem','An Old Idea','Several Attempts','Enter OpenClaw','The OpenProject Skill','Real Example: Part 1','Real Example: Part 2','Why This Matters','The Jira Skill','The Skill Ecosystem','What I Learned','AI Pipelines','Get Started'],
+  fr:['Titre','Le Problème','Une vieille idée','Plusieurs tentatives','Voici OpenClaw','Le Skill OpenProject','Exemple réel : Partie 1','Exemple réel : Partie 2','Pourquoi c\'est important','Le Skill Jira','L\'écosystème de Skills','Ce que j\'ai appris','Pipelines IA','Pour commencer'],
+  nl:['Titel','Het Probleem','Een oud idee','Meerdere pogingen','Maak kennis met OpenClaw','De OpenProject Skill','Echt voorbeeld: Deel 1','Echt voorbeeld: Deel 2','Waarom dit belangrijk is','De Jira Skill','Het Skill Ecosysteem','Wat ik heb geleerd','AI Pipelines','Aan de slag']
 };
 function buildMenu(){
   const inner=document.getElementById('slide-menu-inner');
+  const titles=menuTitles[lang]||menuTitles.en;
   inner.innerHTML='<div class="sm-title">Slides</div>'+
-    menuTitles[lang].map((t,i)=>
+    titles.map((t,i)=>
       `<div class="sm-item${i===cur?' sm-active':''}" onclick="show(${i});toggleMenu()"><span class="sm-num">${String(i+1).padStart(2,'0')}</span>${t}</div>`
     ).join('');
 }
@@ -628,8 +688,6 @@ function toggleMenu(){
   if(m.classList.contains('open'))buildMenu();
 }
 document.getElementById('menu-btn').onclick=toggleMenu;
-
-// Init
 show(0);
 </script>
 </body>
